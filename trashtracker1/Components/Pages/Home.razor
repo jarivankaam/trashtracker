@@ -1,4 +1,6 @@
 ﻿@page "/"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
 
 <PageTitle>Home</PageTitle>
 
@@ -21,6 +23,7 @@
 
         @*Grafiekies*@
         <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4">
+            <canvas id="lineChart" width="800" height="333"></canvas>
         </div>
 
         @*Filters en feestdagen*@
@@ -46,3 +49,83 @@
         </div>
     </div>
 </div>
+
+
+@code {
+    private string[] Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr" };
+    private int[] Values = new[] { 4, 6, 3, 8, 2 };
+    private string ChartTitle = "Afval per dag";
+
+    [Inject] IJSRuntime JSRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("renderLineChart", Labels, Values, ChartTitle);
+        }
+    }
+
+    private async Task UpdateChartAsync()
+    {
+        Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo" };
+        Values = new[] { 5, 7, 4, 9, 3, 6, 2 };
+        ChartTitle = "Nieuwe Afval Data";
+
+        await JSRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
+    }
+}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    let chartInstance = null;
+
+    window.renderLineChart = (labels, data, title) => {
+        const ctx = document.getElementById('lineChart').getContext('2d');
+
+        if (chartInstance) {
+            chartInstance.destroy();
+        }
+
+        chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: title,
+                    data: data,
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: title
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    };
+
+    window.updateLineChart = (labels, data, title) => {
+        if (!chartInstance) return;
+        chartInstance.data.labels = labels;
+        chartInstance.data.datasets[0].data = data;
+        chartInstance.data.datasets[0].label = title;
+        chartInstance.options.plugins.title.text = title;
+        chartInstance.update();
+    };
+</script>
+

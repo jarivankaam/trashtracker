@@ -33,13 +33,10 @@
         </div>
 
         @*Grafiekies*@
-<<<<<<< OverzichtDataOutput
-        <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4"></div>
-=======
         <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4">
             <canvas id="lineChart" width="800" height="333"></canvas>
         </div>
->>>>>>> dev
+
 
         @*Filters en feestdagen*@
         <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4 flex">
@@ -64,7 +61,6 @@
         </div>
     </div>
 </div>
-<<<<<<< OverzichtDataOutput
 @code {
     Random rnd = new Random();
     private string location;
@@ -97,11 +93,7 @@
         trashAmount = MostTrashAmount();
         filteredTrashAmount = FilteredTrashAmount();
     }
-}
-=======
 
-
-@code {
     private string[] Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr" };
     private int[] Values = new[] { 4, 6, 3, 8, 2 };
     private string ChartTitle = "Afval per dag";
@@ -178,5 +170,3 @@
         chartInstance.update();
     };
 </script>
-
->>>>>>> dev

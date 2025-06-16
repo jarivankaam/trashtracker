@@ -5,31 +5,46 @@
 <PageTitle>Home</PageTitle>
 
 <div class="w-full max-w-[1920px] aspect-video mx-auto p-6 bg-gray-100">
-    
+
     <div class="grid grid-cols-6 grid-rows-5 gap-x-12 gap-y-6 h-full">
         @* MAP *@
-        <div class="col-span-3 row-span-3 bg-white rounded-xl p-2">
-        </div>
+        <div class="col-span-3 row-span-3 bg-white rounded-xl p-2"></div>
 
         @* Statestieken *@
         <div class="col-span-2 row-span-3 flex flex-col gap-5">
-            <div class="bg-white rounded-xl shadow-xl p-4 h-full"><p class="text-xs">Locatie met meeste afval:</p></div>
-            <div class="bg-white rounded-xl shadow-xl p-4 h-full"><p class="text-xs">Hoeveelheid afval op locatie met meeste afval:</p></div>
-            <div class="bg-white rounded-xl shadow-xl p-4 h-full"><p class="text-xs">Hoeveelheid afval op gefilterde locatie:</p></div>
+            <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+                <h1 class="text-sm">Locatie met meeste afval:</h1>
+                <p class="text-xs">@location</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+                <h1 class="text-sm">Hoeveelheid afval op locatie met meeste afval:</h1>
+                <p class="text-xs">@trashAmount</p>
+            </div>
+            <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+                <h1 class="text-sm">Hoeveelheid afval op gefilterde locatie:</h1>
+                <p class="text-xs">@filteredTrashAmount</p>
+            </div>
         </div>
 
         @* Favoriete locaties *@
-        <div class="col-span-1 row-span-3 bg-white rounded-xl shadow-xl p-4 -ml-6"><p class="text-xs">Favoriete locaties:</p></div>
+        <div class="col-span-1 row-span-3 bg-white rounded-xl shadow-xl p-4 -ml-6">
+            <h1 class="text-sm">Favoriete locaties:</h1>
+            <p class="text-xs">(Hier staan favoriete locaties)</p>
+        </div>
 
         @*Grafiekies*@
+<<<<<<< OverzichtDataOutput
+        <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4"></div>
+=======
         <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4">
             <canvas id="lineChart" width="800" height="333"></canvas>
         </div>
+>>>>>>> dev
 
         @*Filters en feestdagen*@
         <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4 flex">
             <div class="flex flex-col gap-2 flex-1">
-                <p>Filters:</p>
+                <h1>Filters:</h1>
                 <input type="range" class="w-1/3" />
                 <div class="flex gap-2 flex-wrap">
                     <button class="px-2 py-1 rounded-xl shadow-xl"><p class="text-xs">1 dag</p></button>
@@ -49,6 +64,41 @@
         </div>
     </div>
 </div>
+<<<<<<< OverzichtDataOutput
+@code {
+    Random rnd = new Random();
+    private string location;
+    private int trashAmount;
+    private int filteredTrashAmount;
+    public string MostTrashLocation()
+    {
+
+        string location = "Location";
+
+        return location;
+    }
+    public int MostTrashAmount()
+    {
+
+        int trashAmount = rnd.Next(0, 100);
+
+        return trashAmount;
+    }
+    public int FilteredTrashAmount()
+    {
+
+        int filteredTrashAmount = rnd.Next(0, 100);
+
+        return filteredTrashAmount;
+    }
+    protected override void OnInitialized()
+    {
+        location = MostTrashLocation();
+        trashAmount = MostTrashAmount();
+        filteredTrashAmount = FilteredTrashAmount();
+    }
+}
+=======
 
 
 @code {
@@ -129,3 +179,4 @@
     };
 </script>
 
+>>>>>>> dev

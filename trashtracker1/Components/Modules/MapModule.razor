@@ -29,6 +29,12 @@
             mapTypeId: 'satellite'
         });
 
+        new google.maps.Marker({
+            position: {lat: 37.785, lng: -122.435},
+            map,
+            title: "testmarker",
+        });
+
         var heatmap = new google.maps.visualization.HeatmapLayer({
             data: heatmapData
         });

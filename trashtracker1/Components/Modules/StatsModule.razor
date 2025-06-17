@@ -1,0 +1,71 @@
+﻿<div class="col-span-2 row-span-3 flex flex-col gap-5">
+    <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+        <h1 class="text-sm">Locatie met meeste afval:</h1>
+        <p class="text-xs">@location</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+        <h1 class="text-sm">Hoeveelheid afval op locatie met meeste afval:</h1>
+        <p class="text-xs">@trashAmount</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+        <h1 class="text-sm">Hoeveelheid afval op gefilterde locatie:</h1>
+        <p class="text-xs">@filteredTrashAmount</p>
+    </div>
+</div>
+
+@code {
+    Random rnd = new Random();
+    private string location;
+    private int trashAmount;
+    private int filteredTrashAmount;
+    public string MostTrashLocation()
+    {
+
+        string location = "Location";
+
+        return location;
+    }
+    public int MostTrashAmount()
+    {
+
+        int trashAmount = rnd.Next(0, 100);
+
+        return trashAmount;
+    }
+    public int FilteredTrashAmount()
+    {
+
+        int filteredTrashAmount = rnd.Next(0, 100);
+
+        return filteredTrashAmount;
+    }
+    protected override void OnInitialized()
+    {
+        location = MostTrashLocation();
+        trashAmount = MostTrashAmount();
+        filteredTrashAmount = FilteredTrashAmount();
+    }
+
+    private string[] Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr" };
+    private int[] Values = new[] { 4, 6, 3, 8, 2 };
+    private string ChartTitle = "Afval per dag";
+
+    [Inject] IJSRuntime JSRuntime { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("renderLineChart", Labels, Values, ChartTitle);
+        }
+    }
+
+    private async Task UpdateChartAsync()
+    {
+        Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo" };
+        Values = new[] { 5, 7, 4, 9, 3, 6, 2 };
+        ChartTitle = "Nieuwe Afval Data";
+
+        await JSRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
+    }
+}

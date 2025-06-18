@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Linq;
 
 namespace trashtracker1.Components.Code
 {
@@ -10,8 +11,9 @@ namespace trashtracker1.Components.Code
         public int LitterAmount;
         public int filteredLitterAmount;
         public List<int> litterData = new List<int>();
+        public List<string> litterDays = new List<string>();
 
-        public string[] Labels = ["Ma", "Di", "Wo", "Do", "Vr"];
+        public string[] Labels = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
         public int[] Values;
         public string ChartTitle = "Afval per dag";
 
@@ -25,7 +27,6 @@ namespace trashtracker1.Components.Code
         private async Task UpdateChartAsync()
         {
             ChartTitle = "Afval per dag";
-            Labels = ["Ma", "Di", "Wo", "Do", "Vr", "Za"];
             await _jsRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
         }
 
@@ -54,11 +55,14 @@ namespace trashtracker1.Components.Code
         public async void GetLitterData(int days, int typeOfLitter)
         {
             litterData.Clear();
-            for (int i = 0; i < days; i++)
+            litterDays.Clear();
+            for (int i = days; i > 0; i--)
             {
                 litterData.Add(rnd.Next(0, 100));
+                litterDays.Add(DateTime.Now.AddDays(-i).ToString("dd-MM"));
             }
             Values = litterData.ToArray();
+            Labels = litterDays.ToArray();
             await UpdateChartAsync();
         }
 

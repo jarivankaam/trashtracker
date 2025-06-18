@@ -1,71 +1,49 @@
-﻿<div class="col-span-2 row-span-3 flex flex-col gap-5">
+﻿@using trashtracker1.Components.Code
+
+<div class="col-span-2 row-span-3 flex flex-col gap-5">
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Locatie met meeste afval:</h1>
-        <p class="text-sm">@location</p>
+        <p class="text-sm">@litterFilters.location</p>
     </div>
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Hoeveelheid afval op locatie met meeste afval:</h1>
-        <p class="text-sm">@trashAmount</p>
+        <p class="text-sm">@litterFilters.LitterAmount</p>
     </div>
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Hoeveelheid afval op gefilterde locatie:</h1>
-        <p class="text-sm">@filteredTrashAmount</p>
+        <p class="text-sm">@litterFilters.filteredLitterAmount</p>
     </div>
 </div>
 
 @code {
-    Random rnd = new Random();
-    private string location;
-    private int trashAmount;
-    private int filteredTrashAmount;
-    public string MostTrashLocation()
-    {
+    [Inject] IJSRuntime JSRuntime { get; set; }
 
-        string location = "Location";
+    [Inject]
+    private LitterFilters litterFilters { get; set; }
 
-        return location;
-    }
-    public int MostTrashAmount()
-    {
-
-        int trashAmount = rnd.Next(0, 100);
-
-        return trashAmount;
-    }
-    public int FilteredTrashAmount()
-    {
-
-        int filteredTrashAmount = rnd.Next(0, 100);
-
-        return filteredTrashAmount;
-    }
     protected override void OnInitialized()
     {
-        location = MostTrashLocation();
-        trashAmount = MostTrashAmount();
-        filteredTrashAmount = FilteredTrashAmount();
+        litterFilters.location = litterFilters.MostLitterLocation();
+        litterFilters.LitterAmount = litterFilters.MostLitterAmount();
+        litterFilters.filteredLitterAmount = litterFilters.FilteredLitterAmount();
+    }
+    public void GetLitterData(int days, string typeOfLitter)
+    {
+        litterFilters.litterData.Clear();
+        for (int i = 0; i < days; i++)
+        {
+            litterFilters.litterData.Add(litterFilters.rnd.Next(0, 100));
+        }
+        litterFilters.Values = litterFilters.litterData.ToArray();
     }
 
-    private string[] Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr" };
-    private int[] Values = new[] { 4, 6, 3, 8, 2 };
-    private string ChartTitle = "Afval per dag";
-
-    [Inject] IJSRuntime JSRuntime { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await JSRuntime.InvokeVoidAsync("renderLineChart", Labels, Values, ChartTitle);
+            GetLitterData(7, "everybody");
+            await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
         }
-    }
-
-    private async Task UpdateChartAsync()
-    {
-        Labels = new[] { "Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo" };
-        Values = new[] { 5, 7, 4, 9, 3, 6, 2 };
-        ChartTitle = "Nieuwe Afval Data";
-
-        await JSRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
     }
 }

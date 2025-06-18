@@ -13,6 +13,7 @@ builder.Services
     .AddBlazorise()
     .AddTailwindProviders()
     .AddFontAwesomeIcons();
+builder.Services.AddScoped<trashtracker1.Components.Code.LitterFilters>();
 
 
 var app = builder.Build();

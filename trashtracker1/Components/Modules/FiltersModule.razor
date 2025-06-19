@@ -1,5 +1,5 @@
 ﻿@using trashtracker1.Components.Code
-
+@using trashtracker1.Components.Code.API.Dto
 <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4 flex">
     <div class="flex flex-col gap-2 flex-1">
         <h2 class="text-md">Filters:</h2>
@@ -18,7 +18,7 @@
     </div>
     <div class="flex-1 border-l pl-4">
         <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
-        @foreach (Holiday holiday in litterFilters.displayedHolidays)
+        @foreach (HolidaysDto holiday in litterFilters.displayedHolidays)
         {
             <p>@holiday.Date @holiday.LocalName</p>
         }

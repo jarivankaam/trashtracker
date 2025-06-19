@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System.Globalization;
 using System.Linq;
+using trashtracker1.Components.Code.API.Dto;
 
 namespace trashtracker1.Components.Code
 {
-    public class Holiday
-    {
-        public string Date { get; set; }
-        public string LocalName { get; set; }
-    }
     public class LitterFilters
     {
         public Random rnd = new Random();
@@ -71,26 +68,35 @@ namespace trashtracker1.Components.Code
             await GetHolidayData();
             await UpdateChartAsync();
         }
-        public List<Holiday> displayedHolidays = new();
-        private List<Holiday> holidays = new()
+        public List<HolidaysDto> displayedHolidays = new();
+        private List<HolidaysDto> holidaysDto = new()
         {
-        new Holiday { Date = new DateTime(2025, 6, 18).ToString("dd-MM"), LocalName = "Nieuwjaarsdag" },
-        new Holiday { Date = new DateTime(2025, 6, 17).ToString("dd-MM"), LocalName = "Goede Vrijdag" },
-        new Holiday { Date = new DateTime(2025, 6, 16).ToString("dd-MM"), LocalName = "Eerste Paasdag" }
+        new HolidaysDto { Date = "2025-06-19", LocalName = "Nieuwjaarsdag" },
+        new HolidaysDto { Date = "2025-06-15", LocalName = "Goede Vrijdag" },
+        new HolidaysDto { Date = "2025-06-17", LocalName = "Eerste Paasdag" }
         };
         public async Task GetHolidayData()
         {
             displayedHolidays.Clear();
             foreach (string day in litterDays)
             {
-                foreach (Holiday holiday in holidays)
+                foreach (HolidaysDto holiday in holidaysDto)
                 {
-                    if (holiday.Date.Contains(day))
+                    if (FormatToDayMonth(holiday.Date).Contains(day))
                     {
-                        displayedHolidays.Add(holiday);
+                        displayedHolidays.Add(new HolidaysDto
+                        {
+                            LocalName = holiday.LocalName,
+                            Date = (day == DateTime.Now.ToString("dd-MM")) ? "Vandaag" : day
+                        });
                     }
                 }
             }
+        }
+        public string FormatToDayMonth(string dateString)
+        {
+            var date = DateTime.ParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+            return date.ToString("dd-MM");
         }
     }
 }

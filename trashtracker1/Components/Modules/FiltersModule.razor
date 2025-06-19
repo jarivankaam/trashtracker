@@ -1,22 +1,37 @@
 ﻿@using trashtracker1.Components.Code
 
-<div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-4 flex">
-    <div class="flex flex-col gap-2 flex-1">
-        <h2 class="text-md">Filters:</h2>
-        <input type="range" class="w-1/3" />
-        <div class="flex gap-2 flex-wrap">
-            <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">1 dag</p></button>
-            <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">3 dagen</p></button>
-            <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">5 dagen</p></button>
-            <button @onclick="() => litterFilters.GetLitterData(1, 1)" class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">vandaag</p></button>
+<div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-0 flex">
+    <div class="flex flex-col gap-2 flex-1 p-2">
+        <div class="flex gap-2 py-1 flex-wrap grid grid-cols-2">
+            <h2 class="text-md flex items-center pl-2">Filters:</h2>
+            <button @onclick="() => litterFilters.GetLitterData(1, 1)" class="px-2 py-1 ml-auto mr-1 rounded-xl shadow-xl flex items-center justify-end"><p class="text-sm py-2">vandaag</p></button>
         </div>
-        <div class="flex gap-2 flex-wrap">
-            <button class="px-2 py-1 rounded-xl shadow-xl)"><p class="text-sm">Klein afval</p></button>
-            <button class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">Medium afval</p></button>
-            <button class="px-2 py-1 rounded-xl shadow-xl"><p class="text-sm">Plastic en chemisch afval</p></button>
+        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+            <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">+1 dag</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">+3 dagen</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">+5 dagen</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">+1 maand</p></button>
+        </div>
+        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+            <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">-1 dag</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">-3 dagen</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">-5 dagen</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">-1 maand</p></button>
+        </div>
+        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Batterijen</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Karton</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Glas</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Metaal</p></button>
+        </div>
+        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Organisch</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Papier</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Plastic</p></button>
+            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Tissue</p></button>
         </div>
     </div>
-    <div class="flex-1 border-l pl-4">
+    <div class="flex-1 border-l p-3 pl-4">
         <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
         @foreach (Holiday holiday in litterFilters.displayedHolidays)
         {

@@ -43,6 +43,7 @@
         if (firstRender)
         {
             GetLitterData(7, "everybody");
+            litterFilters.GetLitterData(7, 1);
             await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
         }
     }

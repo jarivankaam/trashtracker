@@ -18,9 +18,22 @@
     </div>
     <div class="flex-1 border-l pl-4">
         <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
+        @foreach (Holiday holiday in litterFilters.displayedHolidays)
+        {
+            <p>@holiday.Date @holiday.LocalName</p>
+        }
     </div>
 </div>
 @code{
     [Inject]
     private LitterFilters litterFilters { get; set; }
+    protected override void OnInitialized()
+    {
+        LoadHolidayData();
+    }
+    private async Task LoadHolidayData()
+    {
+        await Task.Delay(10);
+        StateHasChanged();
+    }
 }

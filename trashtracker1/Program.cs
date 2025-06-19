@@ -13,8 +13,9 @@ builder.Services
     .AddBlazorise()
     .AddTailwindProviders()
     .AddFontAwesomeIcons();
-builder.Services.AddScoped<trashtracker1.Components.Code.LitterFilters>();
-builder.Services.AddScoped<trashtracker1.Components.Code.Holiday>();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.LitterFilters>();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.Holiday>();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.PredictionsHelperService>();
 
 
 var app = builder.Build();

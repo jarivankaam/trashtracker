@@ -2,7 +2,7 @@
 using Microsoft.JSInterop;
 using System.Linq;
 
-namespace trashtracker1.Components.Code
+namespace trashtracker1.Components.HelperServices
 {
     public class Holiday
     {

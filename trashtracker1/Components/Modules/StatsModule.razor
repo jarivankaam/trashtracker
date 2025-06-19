@@ -1,6 +1,14 @@
-﻿@using trashtracker1.Components.Code
+﻿@using trashtracker1.Components.HelperServices
+@inject PredictionsHelperService PredictionsService
 
 <div class="col-span-2 row-span-3 flex flex-col gap-5">
+    <div class="text-md flex flex-row gap-5 w-full align-items-center">
+        <h2>Je bekijkt nu: @title</h2>
+        <select @onchange="PredictionsService.OnSelectChange" class="p-3 w-full rounded-xl">
+            <option value="History">Historie</option>
+            <option value="Future">Toekomst</option>
+        </select>
+    </div>
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Locatie met meeste afval:</h1>
         <p class="text-sm">@litterFilters.location</p>
@@ -16,16 +24,20 @@
 </div>
 
 @code {
+    
     [Inject] IJSRuntime JSRuntime { get; set; }
 
     [Inject]
     private LitterFilters litterFilters { get; set; }
+    private string title;
 
     protected override void OnInitialized()
     {
         litterFilters.location = litterFilters.MostLitterLocation();
         litterFilters.LitterAmount = litterFilters.MostLitterAmount();
         litterFilters.filteredLitterAmount = litterFilters.FilteredLitterAmount();
+        title = PredictionsService.TitleData;
+        PredictionsService.OnTitleChanged += UpdateTitle;
     }
     public void GetLitterData(int days, string typeOfLitter)
     {
@@ -37,7 +49,16 @@
         litterFilters.Values = litterFilters.litterData.ToArray();
     }
 
+    private void UpdateTitle()
+    {
+        title = PredictionsService.TitleData;
+        InvokeAsync(StateHasChanged); // Ensure UI updates
+    }
 
+    public void Dispose()
+    {
+        PredictionsService.OnTitleChanged -= UpdateTitle;
+    }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
@@ -47,4 +68,10 @@
             await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
         }
     }
+    
+    //write a function to change the @TitleData based on the selected item in the select element
+  
+    
+
+
 }

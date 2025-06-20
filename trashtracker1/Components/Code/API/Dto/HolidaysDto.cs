@@ -2,7 +2,7 @@
 {
     public class HolidaysDto
     {
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
         public string LocalName { get; set; }
     }
 }

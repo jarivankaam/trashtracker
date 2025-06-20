@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
+using System;
 using System.Globalization;
 using System.Linq;
 using trashtracker1.Components.Code.API.Dto;
@@ -71,9 +72,9 @@ namespace trashtracker1.Components.Code
         public List<HolidaysDto> displayedHolidays = new();
         private List<HolidaysDto> holidaysDto = new()
         {
-        new HolidaysDto { Date = "2025-06-19", LocalName = "Nieuwjaarsdag" },
-        new HolidaysDto { Date = "2025-06-15", LocalName = "Goede Vrijdag" },
-        new HolidaysDto { Date = "2025-06-17", LocalName = "Eerste Paasdag" }
+        new HolidaysDto { Date = new DateTime (2025-06-19), LocalName = "Nieuwjaarsdag" },
+        new HolidaysDto { Date = new DateTime (2025-06-15), LocalName = "Goede Vrijdag" },
+        new HolidaysDto { Date = new DateTime (2025-06-17), LocalName = "Eerste Paasdag" }
         };
         public async Task GetHolidayData()
         {
@@ -82,12 +83,12 @@ namespace trashtracker1.Components.Code
             {
                 foreach (HolidaysDto holiday in holidaysDto)
                 {
-                    if (FormatToDayMonth(holiday.Date).Contains(day))
+                    if (Convert.ToString(holiday.Date).Contains(day))
                     {
                         displayedHolidays.Add(new HolidaysDto
                         {
                             LocalName = holiday.LocalName,
-                            Date = (day == DateTime.Now.ToString("dd-MM")) ? "Vandaag" : day
+                            Date = holiday.Date 
                         });
                     }
                 }

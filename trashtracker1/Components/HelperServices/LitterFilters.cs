@@ -211,7 +211,7 @@ namespace trashtracker1.Components.HelperServices
                     }
                 }
             }
-            if (isFutureSelected) // Toekomst
+            if (isFutureSelected) // Toekomst werkt nog niet
             {
                 for (int i = 0; i <= (lastChosenDays - 1); i++)
                 {

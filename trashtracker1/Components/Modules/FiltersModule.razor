@@ -1,4 +1,5 @@
 ﻿@using trashtracker1.Components.HelperServices
+@using trashtracker1.Components.HelperServices.API.Dto
 @inject PredictionsHelperService PredictionsService
 
 <div class="col-span-3 row-span-2 bg-white rounded-xl shadow-xl p-0 flex">
@@ -7,20 +8,6 @@
             <h2 class="text-md flex items-center pl-2">Filters:</h2>
             <button @onclick="() => litterFilters.GetLitterData(1, 1)" class="px-2 py-1 ml-auto mr-1 rounded-xl shadow-xl flex items-center justify-end"><p class="text-sm py-2">vandaag</p></button>
         </div>
-        
-    @if (PredictionsService.IsFutureSelected)
-        {
-            <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4 future">
-                <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
-                    <p class="text-sm py-2">+1 dag</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
-                    <p class="text-sm py-2">+3 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
-                    <p class="text-sm py-2">+5 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
-                    <p class="text-sm py-2">+1 maand</p></button>
-            </div>
-        }
         @if (!PredictionsService.IsFutureSelected)
         {
             <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4 past">
@@ -32,6 +19,19 @@
                     <p class="text-sm py-2">-5 dagen</p></button>
                 <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">-1 maand</p></button>
+            </div>
+        }
+    @if (PredictionsService.IsFutureSelected)
+        {
+            <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4 future">
+                <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                    <p class="text-sm py-2">+1 dag</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                    <p class="text-sm py-2">+3 dagen</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                    <p class="text-sm py-2">+5 dagen</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                    <p class="text-sm py-2">+1 maand</p></button>
             </div>
         }
 
@@ -50,7 +50,7 @@
     </div>
     <div class="flex-1 border-l p-3 pl-4">
         <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
-        @foreach (Holiday holiday in litterFilters.displayedHolidays)
+        @foreach (HolidaysDto holiday in litterFilters.displayedHolidays)
         {
             <p>@holiday.Date @holiday.LocalName</p>
         }

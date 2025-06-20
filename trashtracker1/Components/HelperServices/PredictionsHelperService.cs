@@ -4,7 +4,7 @@ namespace trashtracker1.Components.HelperServices;
 
 public class PredictionsHelperService
 {
-    public string TitleData { get; private set; } = "Toekomstige Data";
+    public string TitleData { get; private set; } = "Historische Data";
 
     public event Action? OnTitleChanged;
 

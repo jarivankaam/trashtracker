@@ -6,53 +6,59 @@
     <div class="flex flex-col gap-2 flex-1 p-2">
         <div class="flex gap-2 py-1 flex-wrap grid grid-cols-2">
             <h2 class="text-md flex items-center pl-2">Filters:</h2>
-            <button @onclick="() => litterFilters.GetLitterData(1, 1)" class="px-2 py-1 ml-auto mr-1 rounded-xl shadow-xl flex items-center justify-end"><p class="text-sm py-2">vandaag</p></button>
+            <button @onclick="() => litterFilters.GetLitterData(1, 8, false)" class="px-2 py-1 ml-auto mr-1 rounded-xl shadow-xl flex items-center justify-end"><p class="text-sm py-2">vandaag</p></button>
         </div>
         @if (!PredictionsService.IsFutureSelected)
         {
             <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4 past">
-                <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(2, 8, false)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">-1 dag</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(4, 8, false)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">-3 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(6, 8, false)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">-5 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(31, 8, false)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">-1 maand</p></button>
             </div>
+            <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 0, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Batterijen</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 1, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Karton</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 2, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Glas</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 3, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Metaal</p></button>
+            </div>
+            <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 4, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Organisch</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 5, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Papier</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 6, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Plastic</p></button>
+                <button @onclick="() => litterFilters.GetLitterData(litterFilters.lastChosenDays, 7, litterFilters.isLastChosenFutureSelected)" class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Tissue</p></button>
+            </div>
         }
-    @if (PredictionsService.IsFutureSelected)
+        @if (PredictionsService.IsFutureSelected)
         {
             <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4 future">
-                <button @onclick="() => litterFilters.GetLitterData(2, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(2, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+1 dag</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(4, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(4, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+3 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(6, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(6, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+5 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(31, 1)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(31, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+1 maand</p></button>
             </div>
         }
-
-        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Batterijen</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Karton</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Glas</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Metaal</p></button>
-        </div>
-        <div class="flex gap-2 py-1 pr-1 flex-wrap grid grid-cols-4">
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Organisch</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Papier</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Plastic</p></button>
-            <button class="px-2 py-1 w-full rounded-xl shadow-xl"><p class="text-sm py-2">Tissue</p></button>
-        </div>
     </div>
     <div class="flex-1 border-l p-3 pl-4">
         <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
         @foreach (HolidaysDto holiday in litterFilters.displayedHolidays)
         {
-            <p>@holiday.Date @holiday.LocalName</p>
+            @if (DateTime.Now.ToString("dd-MM") == holiday.Date.ToString("dd-MM"))
+            {
+                <p>Vandaag @holiday.LocalName</p>
+            }
+            else
+            {
+                <p>@holiday.Date.ToString("dd-MM") @holiday.LocalName</p>
+            }
         }
     </div>
 </div>

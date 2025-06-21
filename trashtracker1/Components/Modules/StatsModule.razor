@@ -24,7 +24,6 @@
 </div>
 
 @code {
-    
     [Inject] IJSRuntime JSRuntime { get; set; }
 
     [Inject]
@@ -43,6 +42,7 @@
     private void UpdateTitle()
     {
         title = PredictionsService.TitleData;
+        litterFilters.GetLitterData(litterFilters.lastChosenDays, litterFilters.lastChosenTypeOfLitter, PredictionsService.IsFutureSelected); // updates the graph when changing between history and future
         InvokeAsync(StateHasChanged); // Ensure UI updates
     }
 

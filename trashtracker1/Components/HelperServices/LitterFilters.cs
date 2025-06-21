@@ -17,8 +17,9 @@ namespace trashtracker1.Components.HelperServices
         public int LitterAmount;
         public int filteredLitterAmount;
         public List<int> litterData = new List<int>();
-        public List<string> litterDays = new List<string> { "18-6", "17-6", "16-6", "15-6", "14-6", "13-6", "12-6" };
-        public List<string> litterDaysLabels = new List<string> { "18-6", "17-6", "16-6", "15-6", "14-6", "13-6", "12-6" };
+        public List<string> litterDays = new List<string>();
+        public List<string> litterDaysLabels = new List<string>();
+        public List<HolidaysDto> displayedHolidays = new();
         public int lastChosenDays = 7;
         public bool isLastChosenFutureSelected = false;
         public int lastChosenTypeOfLitter = 8;
@@ -61,7 +62,14 @@ namespace trashtracker1.Components.HelperServices
             return filteredLitterAmount;
         }
 
-        private List<PredictionDto> predictionDto = new()
+        private List<HolidaysDto> holidaysDto = new() //test data Holiday api
+        {
+        new HolidaysDto { Date = new DateTime(2025, 6, 19), LocalName = "Nieuwjaarsdag" },
+        new HolidaysDto { Date = new DateTime(2025, 6, 20), LocalName = "Goede Vrijdag" },
+        new HolidaysDto { Date = new DateTime(2025, 6, 21), LocalName = "Eerste Paasdag" }
+        };
+
+        private List<PredictionDto> predictionDto = new() //test data Prediction api
         {
             new PredictionDto
             {
@@ -107,7 +115,7 @@ namespace trashtracker1.Components.HelperServices
             }
         };
 
-        private List<LitterDto> litterDto = new()
+        private List<LitterDto> litterDto = new() //test data Litter api
         {
             new LitterDto
             {
@@ -211,7 +219,7 @@ namespace trashtracker1.Components.HelperServices
             litterDaysLabels.Clear();
             if (!isFutureSelected) // geschiedenis
             {
-                if (lastChosenDays == 1) // vandaag
+                if (lastChosenDays == 1) // geschiedenis vandaag
                 {
                     DateTime now = DateTime.Now;
                     DateTime beginDay = new DateTime(now.Year, now.Month, now.Day);
@@ -231,7 +239,7 @@ namespace trashtracker1.Components.HelperServices
                         litterDaysLabels.Add(beginDay.AddHours(i).ToString("HH:mm"));
                     }
                 }
-                else // meerdere dagen
+                else // geschiedenis meerdere dagen
                 {
                     for (int i = (lastChosenDays - 1); i >= 0; i--)
                     {
@@ -280,13 +288,7 @@ namespace trashtracker1.Components.HelperServices
             await GetHolidayData();
             await UpdateChartAsync();
         }
-        public List<HolidaysDto> displayedHolidays = new();
-        private List<HolidaysDto> holidaysDto = new()
-        {
-        new HolidaysDto { Date = new DateTime(2025, 6, 19), LocalName = "Nieuwjaarsdag" },
-        new HolidaysDto { Date = new DateTime(2025, 6, 20), LocalName = "Goede Vrijdag" },
-        new HolidaysDto { Date = new DateTime(2025, 6, 21), LocalName = "Eerste Paasdag" }
-        };
+        
         public async Task GetHolidayData()
         {
             displayedHolidays.Clear();
@@ -304,11 +306,6 @@ namespace trashtracker1.Components.HelperServices
                     }
                 }
             }
-        }
-        public string FormatToDayMonth(string dateString)
-        {
-            var date = DateTime.ParseExact(dateString, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-            return date.ToString("dd-MM");
         }
     }
 }

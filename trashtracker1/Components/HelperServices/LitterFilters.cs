@@ -61,6 +61,52 @@ namespace trashtracker1.Components.HelperServices
             return filteredLitterAmount;
         }
 
+        private List<PredictionDto> predictionDto = new()
+        {
+            new PredictionDto
+            {
+                predictedTotal = 21,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 22)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 51,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 23)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 61,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 24)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 71,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 25)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 81,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 26)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 0,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 27)
+            },
+            new PredictionDto
+            {
+                predictedTotal = 101,
+                confidence = 95.0f,
+                date = new DateOnly(2025, 6, 28)
+            }
+        };
+
         private List<LitterDto> litterDto = new()
         {
             new LitterDto
@@ -211,17 +257,12 @@ namespace trashtracker1.Components.HelperServices
                     }
                 }
             }
-            if (isFutureSelected) // Toekomst werkt nog niet
+            if (isFutureSelected) // Toekomst
             {
-                for (int i = 0; i <= (lastChosenDays - 1); i++)
+                foreach (PredictionDto litterPredictedAmount in predictionDto)
                 {
-                    amountOfLitter = 0;
-                    string currentDay = DateTime.Now.AddDays(i).ToString("dd-MM");
-                    foreach (LitterDto litter in litterDto) {
-                        litterData.Add(amountOfLitter);
-                    }
-                    litterData.Add(amountOfLitter);
-                    litterDays.Add(currentDay);
+                    litterData.Add(litterPredictedAmount.predictedTotal);
+                    string currentDay = litterPredictedAmount.date.ToString("dd-MM");
                     if (currentDay == DateTime.Now.ToString("dd-MM"))
                     {
                         litterDaysLabels.Add("Vandaag");

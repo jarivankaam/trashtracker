@@ -24,7 +24,6 @@
 </div>
 
 @code {
-    
     [Inject] IJSRuntime JSRuntime { get; set; }
 
     [Inject]
@@ -39,19 +38,11 @@
         title = PredictionsService.TitleData;
         PredictionsService.OnTitleChanged += UpdateTitle;
     }
-    public void GetLitterData(int days, string typeOfLitter)
-    {
-        litterFilters.litterData.Clear();
-        for (int i = 0; i < days; i++)
-        {
-            litterFilters.litterData.Add(litterFilters.rnd.Next(0, 100));
-        }
-        litterFilters.Values = litterFilters.litterData.ToArray();
-    }
 
     private void UpdateTitle()
     {
         title = PredictionsService.TitleData;
+        litterFilters.GetLitterData(litterFilters.lastChosenDays, litterFilters.lastChosenTypeOfLitter, PredictionsService.IsFutureSelected); // updates the graph when changing between history and future
         InvokeAsync(StateHasChanged); // Ensure UI updates
     }
 
@@ -63,8 +54,7 @@
     {
         if (firstRender)
         {
-            GetLitterData(7, "everybody");
-            litterFilters.GetLitterData(7, 1, false);
+            litterFilters.GetLitterData(7, 8, false);
             await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
         }
     }

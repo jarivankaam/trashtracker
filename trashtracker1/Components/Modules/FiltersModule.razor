@@ -42,13 +42,13 @@
                     <p class="text-sm py-2">+3 dagen</p></button>
                 <button @onclick="() => litterFilters.GetLitterData(6, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+5 dagen</p></button>
-                <button @onclick="() => litterFilters.GetLitterData(31, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
+                <button @onclick="() => litterFilters.GetLitterData(daysInMonth, 8, true)" class="px-1 py-1 w-full rounded-xl shadow-xl">
                     <p class="text-sm py-2">+1 maand</p></button>
             </div>
         }
     </div>
     <div class="flex-1 border-l p-3 pl-4">
-        <p class="text-sm">Speciale locaties om in de gaten te houden tijdens [feestdag]:</p>
+        <h2 class="text-md">Feestdagen die binnen de gefilterde periode vallen:</h2>
         @foreach (HolidaysDto holiday in litterFilters.displayedHolidays)
         {
             @if (DateTime.Now.ToString("dd-MM") == holiday.Date.ToString("dd-MM"))
@@ -65,8 +65,10 @@
 @code{
     [Inject]
     private LitterFilters litterFilters { get; set; }
+    int daysInMonth;
     protected override void OnInitialized()
     {
+        daysInMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
         LoadHolidayData();
     }
     private async Task LoadHolidayData()

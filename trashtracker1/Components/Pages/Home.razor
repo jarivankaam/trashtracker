@@ -3,7 +3,9 @@
 @using trashtracker1.Components.HelperServices.API
 @rendermode InteractiveServer
 @attribute [StreamRendering]
+@using trashtracker1.Components.HelperServices
 @inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
+@inject trashtracker1.Components.HelperServices.LitterFilters litterFilters
 @using trashtracker1.Components.HelperServices.API.Dto
 
 <PageTitle>Home</PageTitle>
@@ -13,7 +15,8 @@
     private List<LitterDto> predictions = new();
 
     protected override async Task OnInitializedAsync()
-    {
+    { 
+        await litterFilters.MakeApiCall();
         predictions = await ApiClient.GetLitterAsync();
     }
 }
@@ -22,7 +25,7 @@
 
     <div class="grid grid-cols-6 grid-rows-5 gap-x-12 gap-y-6 h-full max-w-[1920px]  mx-auto">
         @* MAP *@
-        <MapModule Predictions="predictions" />
+        <MapModule Predictions="predictions"/>
         @* Statestieken *@
         <StatsModule />
         @* Favoriete locaties *@

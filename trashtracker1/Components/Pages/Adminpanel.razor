@@ -1,4 +1,6 @@
 ﻿@page "/Adminpanel"
+@using trashtracker1.Components.HelperServices.API.Dto
+@using Microsoft.AspNetCore.Components.Forms
 <div class="h-[78vh]">
     <div class="bg-white flex text-sm h-full">
         @*Sidebar*@
@@ -18,50 +20,101 @@
                 @*Forms row*@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                     @*Add User*@
-                    <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
-                        <h2 class="text-center font-medium mb-8">Gebruiker toevoegen</h2>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <input type="text" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                            <input type="text" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                    <EditForm Model="@newUser" OnValidSubmit="@SaveUser">
+                        <DataAnnotationsValidator />
+                        <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
+                            <h2 class="text-center font-medium mb-8">Gebruiker toevoegen</h2>
+
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="newUser.Voornaam" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Achternaam" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                            <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Gebruikersnaam" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="newUser.Wachtwoord" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.AdminRol" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-1">
+                                <div></div>
+                                <button type="submit" class="w-full bg-gray-100 border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">
+                                    opslaan
+                                </button>
+                            </div>
                         </div>
-                        <input type="email" placeholder="Email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center mb-4 focus:outline-none focus:ring-1 focus:ring-red-400" />
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <input type="text" placeholder="Gebruikersnaam" class="w-full border  border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                            <input type="text" placeholder="Admin rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mb-1">
-                            <div></div>
-                            <button class="w-full bg-gray-100 border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">opslaan</button>
-                        </div>
-                    </div>
+                    </EditForm>
 
                     @*Edit User*@
-                    <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
-                        <h2 class="text-center font-medium mb-8">Gebruiker aanpassen</h2>
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <input type="text" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                            <input type="text" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                        </div>
-                        <input type="email" placeholder="Email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center mb-4 focus:outline-none focus:ring-1 focus:ring-red-400" />
-                        <div class="grid grid-cols-2 gap-4 mb-4">
-                            <input type="text" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                            <input type="text" placeholder="Admin rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                        </div>
-                        <div class="grid grid-cols-2 gap-4 mb-1">
-                            <div></div>
-                            <button class="w-full bg-gray-100 border-gray-300 text-center border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">opslaan</button>
-                        </div>
-                    </div>
-                </div>
+                    <EditForm Model="@newUser" OnValidSubmit="@EditUser">
+                        <DataAnnotationsValidator />
+                        <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
+                            <h2 class="text-center font-medium mb-8">Gebruiker </h2>
 
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="newUser.Voornaam" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Achternaam" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Gebruikersnaam" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="newUser.Wachtwoord" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.AdminRol" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 mb-1">
+                                <div></div>
+                                <button type="submit" class="w-full bg-gray-100 border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">
+                                    opslaan
+                                </button>
+                            </div>
+                        </div>
+                    </EditForm>
+                </div>
                 @*User List*@
                 <div class="bg-white p-3 rounded-lg shadow-xl flex-1 overflow-y-auto">
                     <h2 class="mb-2 font-medium">Gebruikers</h2>
                     <div class="h-32 overflow-y-auto border rounded p-2 text-gray-700 text-xs">
-                        <p>Geen gebruikers gevonden...</p>
+                            @if (Users != null && Users.Any())
+                            {
+                                @foreach (var User in Users)
+                                {
+                                    <p>@User.Username</p>
+                                }
+                            }
+                            else
+                            {
+                            <p>Geen gebruikers gevonden...</p>
+                            }
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@code {
+    List<UserDto> Users;
+    private UserModel newUser = new();
+
+    private async Task SaveUser()
+    {
+        
+    }
+    private async Task EditUser()
+    {
+
+    }
+    public class UserModel
+    {
+        public string Voornaam { get; set; }
+        public string Achternaam { get; set; }
+        public string Email { get; set; }
+        public string Gebruikersnaam { get; set; }
+        public string Wachtwoord { get; set; }
+        public string AdminRol { get; set; }
+    }
+}

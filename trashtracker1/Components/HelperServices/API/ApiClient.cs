@@ -64,9 +64,14 @@
                 return new List<Dto.PredictionDto>();
             }
         }
-        public async Task<List<Dto.UserDto>> GetUserAsync()
+
+        // USER MANAGEMENT
+
+        // GET-requests
+
+        public async Task<List<Dto.UserDto>> GetUserAsync(string identityUserId)
         {
-            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/id/{identityUserId}");
             string statusCode = Convert.ToString(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
@@ -79,5 +84,57 @@
             }
         }
 
+        public async Task<string> GetIdenityUserIdByEmail(string email)
+        {
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/authentication/id/{email}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+                return string.Empty;
+            }
+        }
+
+        // POST-requests
+        public async Task RegisterNewUser(Dto.UserDto user)
+        {
+            var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/custom/auth/register", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        public async Task VerifyUserByPassword(Dto.UserDto user)
+        {
+            var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/verifyuser", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        // UPDATE-requests
+        public async Task UpdateUser(Dto.UserDto user)
+        {
+            var response = await _httpClient.PutAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/updateuser", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        // DELETE-requests
+        public async Task DeleteUserByIdentiyUserId(string identityUserId)
+        {
+            var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/{identityUserId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
     }
 }

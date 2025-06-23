@@ -22,7 +22,7 @@
         }
         public async Task<List<Dto.HolidaysDto>> GetHolidaysAsync()
         {
-            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/api/External/holidays");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.HolidaysDto>>();
@@ -48,7 +48,12 @@
         }
         public async Task<List<Dto.PredictionDto>> GetPredictionAsync()
         {
-            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
+            DateTime date = DateTime.Now.AddDays(1);
+            string currentdate = date.ToString("yyyy-MM-dd");
+            DateTime nextMonth = DateTime.Now.AddDays(1).AddMonths(1);
+            string nextMonthDate = nextMonth.ToString("yyyy-MM-dd");
+            string connectionString = $"https://avansict2231011.azurewebsites.net/api/External/predict?startDate={currentdate}&endDate={nextMonthDate}";
+            var response = await _httpClient.GetAsync(connectionString);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.PredictionDto>>();

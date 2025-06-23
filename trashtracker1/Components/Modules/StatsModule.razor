@@ -54,6 +54,7 @@
     {
         if (firstRender)
         {
+            await Task.Delay(100);
             litterFilters.GetLitterData(7, 8, false);
             await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
         }

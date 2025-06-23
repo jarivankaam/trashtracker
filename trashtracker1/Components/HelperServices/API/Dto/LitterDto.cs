@@ -8,5 +8,6 @@
         public float LocationLongitude { get; set; }
         public float LocationLatitude { get; set; }
         public DateTime DetectionTime { get; set; }
+        public WeatherInfoDto? WeatherInfo { get; set; }
     }
 }

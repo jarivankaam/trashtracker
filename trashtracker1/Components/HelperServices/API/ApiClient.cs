@@ -68,11 +68,23 @@
         // USER MANAGEMENT
 
         // GET-requests
+        public async Task<List<Dto.UserDto>> GetAllUsers()
+        {
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<List<Dto.UserDto>>();
+            }
+            else
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+                return new List<Dto.UserDto>();
+            }
+        }
 
         public async Task<List<Dto.UserDto>> GetUserAsync(string identityUserId)
         {
             var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/id/{identityUserId}");
-            string statusCode = Convert.ToString(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.UserDto>>();
@@ -130,7 +142,7 @@
         // DELETE-requests
         public async Task DeleteUserByIdentiyUserId(string identityUserId)
         {
-            var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/{identityUserId}");
+            var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/user/{identityUserId}");
             if (!response.IsSuccessStatusCode)
             {
                 Console.WriteLine("Error: " + response.StatusCode);

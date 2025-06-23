@@ -1,6 +1,9 @@
 ﻿@page "/Adminpanel"
+@using trashtracker1.Components.HelperServices.API
 @using trashtracker1.Components.HelperServices.API.Dto
 @using Microsoft.AspNetCore.Components.Forms
+@inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
+@rendermode InteractiveServer
 <div class="h-[78vh]">
     <div class="bg-white flex text-sm h-full">
         @*Sidebar*@
@@ -30,7 +33,7 @@
                                 <InputText @bind-Value="newUser.LastName" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                            <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                                 <InputText @bind-Value="newUser.Username" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
@@ -48,7 +51,7 @@
                     </EditForm>
 
                     @*Edit User*@
-                    <EditForm Model="@newUser" OnValidSubmit="@EditUser">
+                    <EditForm Model="@newUser" OnValidSubmit="@EditUserForm">
                         <DataAnnotationsValidator />
                         <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
                             <h2 class="text-center font-medium mb-8">Gebruiker </h2>
@@ -76,21 +79,53 @@
                     </EditForm>
                 </div>
                 @*User List*@
-                <div class="bg-white p-3 rounded-lg shadow-xl flex-1 overflow-y-auto">
-                    <h2 class="mb-2 font-medium">Gebruikers</h2>
-                    <div class="h-32 overflow-y-auto border rounded p-2 text-gray-700 text-xs">
-                            @if (Users != null && Users.Any())
+                <h2 class="mb-4 font-medium text-xs text-left">Gebruikers</h2>
+                <div class="w-full overflow-auto rounded-lg shadow-xl bg-white p-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Voornaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Achternaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Gebruikersnaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">E-mailadres</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Is administrator</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @if (Users == null)
                             {
-                                @foreach (var User in Users)
-                                {
-                                    <p>@User.Username</p>
-                                }
+                                <p>Loading...</p>
+                            }
+                            else if (!Users.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-gray-500 italic text-center">Geen gebruikers gevonden...</td>
+                                </tr>
                             }
                             else
                             {
-                            <p>Geen gebruikers gevonden...</p>
+                                @foreach (var User in Users)
+                                {
+                                    <tr class="odd:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.FirstName</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.LastName</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.Username</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.Email</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @(User.Role == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")">
+                                                @(User.Role == 1 ? "Ja" : "Nee")
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <button class="px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500 transition" @onclick="async () => await EditUser(User.IdentityUserId)">Bewerk</button>
+                                            <button class="ml-4 px-4 py-2 font-medium text-white bg-red-600 rounded-md hover:bg-red-500 transition" @onclick="async () => await DeleteUser(User.IdentityUserId)">Verwijder</button>
+                                        </td>
+                                    </tr>
+                                }
                             }
-                    </div>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -100,12 +135,35 @@
     List<UserDto> Users;
     private UserCreateDto newUser = new();
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        Users = await ApiClient.GetAllUsers(); 
+    }
+
     private async Task SaveUser()
     {
-        
+
     }
-    private async Task EditUser()
+
+    private async Task EditUserForm()
     {
 
+    }
+
+    private async Task EditUser(string identityUserId)
+    {
+
+    }
+
+    private async Task DeleteUser(string identityUserId)
+    {
+        await ApiClient.DeleteUserByIdentiyUserId(identityUserId);
+        await LoadUsers();
+        StateHasChanged();
     }
 }

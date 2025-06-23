@@ -31,6 +31,12 @@ namespace trashtracker1.Components.HelperServices
         public string[] Labels = [];
         public int[] Values;
         public string ChartTitle = "Afval per dag";
+        public int PredictedTotal { get; set; }
+        public int PredictionConfidence { get; set; }
+        public float[] ConfidenceValues { get; private set; } = [];
+
+
+
         
         private readonly ApiClient apiClient;
 
@@ -48,26 +54,126 @@ namespace trashtracker1.Components.HelperServices
                 predictionDto = await apiClient.GetPredictionAsync();
         }
 
-        private async Task UpdateChartAsync()
+        public async Task UpdateChartAsync(bool isInitialRender = false)
         {
-            ChartTitle = "Afval per dag";
-            await _jsRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
+            if (_jsRuntime == null || Labels == null || Values == null || Labels.Length == 0 || Values.Length == 0)
+            {
+                Console.WriteLine("⚠️ Chart not rendered: missing data.");
+                return;
+            }
+
+            Console.WriteLine("✅ Chart rendering with:");
+            Console.WriteLine($"Labels: {string.Join(", ", Labels)}");
+            Console.WriteLine($"Values: {string.Join(", ", Values)}");
+
+            try
+            {
+                ChartTitle = "Afval per dag";
+                var functionName = isInitialRender ? "renderLineChart" : "updateLineChart";
+
+                if (isLastChosenFutureSelected && ConfidenceValues != null && ConfidenceValues.Length > 0)
+                {
+                    // Pass confidence values as tooltip data
+                    await _jsRuntime.InvokeVoidAsync(functionName, Labels, Values, ChartTitle, ConfidenceValues);
+                }
+                else
+                {
+                    await _jsRuntime.InvokeVoidAsync(functionName, Labels, Values, ChartTitle);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Chart JS error: {ex.Message}");
+            }
         }
 
-        public string MostLitterLocation()
+
+
+
+
+       public string MostLitterLocation()
+{
+    if (litterDto == null || !litterDto.Any())
+        return "Geen gegevens beschikbaar";
+
+    List<LitterDto> filteredLitter = new();
+
+    if (lastChosenDays == 1 && !isLastChosenFutureSelected)
+    {
+        var now = DateTime.Now;
+        DateTime beginDay = new DateTime(now.Year, now.Month, now.Day);
+
+        filteredLitter = litterDto
+            .Where(l => l.DetectionTime.Date == beginDay.Date &&
+                        (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter))
+            .ToList();
+    }
+    else if (!isLastChosenFutureSelected)
+    {
+        for (int i = (lastChosenDays - 1); i >= 0; i--)
         {
+            string currentDay = DateTime.Now.AddDays(-i).ToString("dd-MM");
 
-            string location = "Location";
-
-            return location;
+            filteredLitter.AddRange(litterDto.Where(l =>
+                l.DetectionTime.ToString("dd-MM").Contains(currentDay) &&
+                (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter)));
         }
-        public int MostLitterAmount()
+    }
+    else // Future
+    {
+        return "Geen gegevens voor toekomst beschikbaar";
+    }
+
+    var mostLitter = filteredLitter
+        .GroupBy(l => $"{Math.Round(l.LocationLatitude, 3)}, {Math.Round(l.LocationLongitude, 3)}")
+        .Select(g => new { Location = g.Key, Count = g.Count() })
+        .OrderByDescending(x => x.Count)
+        .FirstOrDefault();
+
+    return mostLitter?.Location ?? "Onbekend";
+}
+
+public int MostLitterAmount()
+{
+    if (litterDto == null || !litterDto.Any())
+        return 0;
+
+    List<LitterDto> filteredLitter = new();
+
+    if (lastChosenDays == 1 && !isLastChosenFutureSelected)
+    {
+        var now = DateTime.Now;
+        DateTime beginDay = new DateTime(now.Year, now.Month, now.Day);
+
+        filteredLitter = litterDto
+            .Where(l => l.DetectionTime.Date == beginDay.Date &&
+                        (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter))
+            .ToList();
+    }
+    else if (!isLastChosenFutureSelected)
+    {
+        for (int i = (lastChosenDays - 1); i >= 0; i--)
         {
+            string currentDay = DateTime.Now.AddDays(-i).ToString("dd-MM");
 
-            int LitterAmount = rnd.Next(0, 100);
-
-            return LitterAmount;
+            filteredLitter.AddRange(litterDto.Where(l =>
+                l.DetectionTime.ToString("dd-MM").Contains(currentDay) &&
+                (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter)));
         }
+    }
+    else // Future
+    {
+        return 0;
+    }
+
+    var mostLitter = filteredLitter
+        .GroupBy(l => $"{Math.Round(l.LocationLatitude, 3)}, {Math.Round(l.LocationLongitude, 3)}")
+        .Select(g => new { Location = g.Key, Count = g.Count() })
+        .OrderByDescending(x => x.Count)
+        .FirstOrDefault();
+
+    return mostLitter?.Count ?? 0;
+}
         public int FilteredLitterAmount()
         {
 
@@ -76,7 +182,7 @@ namespace trashtracker1.Components.HelperServices
             return filteredLitterAmount;
         }
 
-        public async void GetLitterData(int days, int typeOfLitter, bool isFutureSelected)
+        public async Task GetLitterData(int days, int typeOfLitter, bool isFutureSelected)
         {
             lastChosenDays = days;
             isLastChosenFutureSelected = isFutureSelected;
@@ -104,6 +210,23 @@ namespace trashtracker1.Components.HelperServices
                     litterDaysLabels.Add(beginDay.AddHours(i).ToString("HH:mm"));
                 }
             }
+            else if (isFutureSelected) // Toekomst
+            {
+                var confidenceList = new List<float>();
+
+                for (int i = 0; i < days && i < predictionDto.Count; i++)
+                {
+                    var prediction = predictionDto[i];
+                    litterData.Add(prediction.predictedTotal);
+                    confidenceList.Add(prediction.confidence); // Assuming your DTO has this field
+
+                    string currentDay = prediction.date.ToString("dd-MM");
+                    litterDaysLabels.Add(currentDay == DateTime.Now.ToString("dd-MM") ? "Vandaag" : currentDay);
+                }
+
+                ConfidenceValues = confidenceList.ToArray();
+            }
+
             else if (!isFutureSelected) // geschiedenis meerdere dagen
             {
                 for (int i = (lastChosenDays - 1); i >= 0; i--)
@@ -128,30 +251,22 @@ namespace trashtracker1.Components.HelperServices
                         litterDaysLabels.Add(currentDay);
                     }
                 }
+                ConfidenceValues = Array.Empty<float>();
+
             }
-            else if (isFutureSelected) // Toekomst
+            if (predictionDto.Count > 0)
             {
-                for (int i = 0; i < days; i++)
-                {
-                    PredictionDto prediction = predictionDto[i];
-                    litterData.Add(prediction.predictedTotal);
-                    string currentDay = prediction.date.ToString("dd-MM");
-                    if (currentDay == DateTime.Now.ToString("dd-MM"))
-                    {
-                        litterDaysLabels.Add("Vandaag");
-                    }
-                    else
-                    {
-                        litterDaysLabels.Add(currentDay);
-                    }
-                }
+                var combinedPrediction = predictionDto.Take(days).ToList();
+                PredictedTotal = combinedPrediction.Sum(p => p.predictedTotal);
+                PredictionConfidence = (int)(combinedPrediction.Average(p => p.confidence) * 100);
             }
+
+
                 
             Values = litterData.ToArray();
             Labels = litterDaysLabels.ToArray();
-            
+            await UpdateChartAsync(isInitialRender: false);
             await GetHolidayData();
-            await UpdateChartAsync();
         }
         
         public async Task GetHolidayData()

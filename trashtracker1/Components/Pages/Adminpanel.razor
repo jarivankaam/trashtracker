@@ -26,16 +26,16 @@
                             <h2 class="text-center font-medium mb-8">Gebruiker toevoegen</h2>
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <InputText @bind-Value="newUser.Voornaam" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.Achternaam" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.FirstName" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.LastName" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
                             <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.Gebruikersnaam" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Username" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <InputText @bind-Value="newUser.Wachtwoord" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.AdminRol" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Password" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.AdminRole" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-1">
@@ -54,16 +54,16 @@
                             <h2 class="text-center font-medium mb-8">Gebruiker </h2>
 
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <InputText @bind-Value="newUser.Voornaam" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.Achternaam" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.FirstName" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.LastName" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
                                 <InputText @bind-Value="newUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.Gebruikersnaam" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Username" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
                             <div class="grid grid-cols-2 gap-4 mb-4">
-                                <InputText @bind-Value="newUser.Wachtwoord" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
-                                <InputText @bind-Value="newUser.AdminRol" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.Password" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="newUser.AdminRole" placeholder="Admin Rol" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
                             </div>
 
                             <div class="grid grid-cols-2 gap-4 mb-1">
@@ -98,7 +98,7 @@
 </div>
 @code {
     List<UserDto> Users;
-    private UserModel newUser = new();
+    private UserCreateDto newUser = new();
 
     private async Task SaveUser()
     {
@@ -107,14 +107,5 @@
     private async Task EditUser()
     {
 
-    }
-    public class UserModel
-    {
-        public string Voornaam { get; set; }
-        public string Achternaam { get; set; }
-        public string Email { get; set; }
-        public string Gebruikersnaam { get; set; }
-        public string Wachtwoord { get; set; }
-        public string AdminRol { get; set; }
     }
 }

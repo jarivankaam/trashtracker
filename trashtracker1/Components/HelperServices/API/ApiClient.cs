@@ -84,17 +84,17 @@ namespace trashtracker1.Components.HelperServices.API
             }
         }
 
-        public async Task<List<Dto.UserDto>> GetUserAsync(string identityUserId)
+        public async Task<Dto.UserDto> GetUserAsync(string identityUserId)
         {
             var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/id/{identityUserId}");
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadFromJsonAsync<List<Dto.UserDto>>();
+                return await response.Content.ReadFromJsonAsync<Dto.UserDto>();
             }
             else
             {
                 Console.WriteLine("Error: " + response.StatusCode);
-                return new List<Dto.UserDto>();
+                return new Dto.UserDto();
             }
         }
 
@@ -113,10 +113,10 @@ namespace trashtracker1.Components.HelperServices.API
         }
 
         // POST-requests
-        public async Task RegisterNewUser(UserCreateDto Createduser)
+        public async Task RegisterNewUser(UserCreateDto createUser)
         {
             int role;
-            if (Createduser.AdminRole == "Admin")
+            if (createUser.Role == 1)
             {
                 role = 0;
             }
@@ -128,11 +128,11 @@ namespace trashtracker1.Components.HelperServices.API
                 {
                     Id = Guid.NewGuid().ToString(),
                     IdentityUserId = Guid.NewGuid().ToString(),
-                    Email = Createduser.Email,
-                    Password = Createduser.Password,
-                    Username = Createduser.Username,
-                    FirstName = Createduser.FirstName,
-                    LastName = Createduser.LastName,
+                    Email = createUser.Email,
+                    Password = createUser.Password,
+                    Username = createUser.Username,
+                    FirstName = createUser.FirstName,
+                    LastName = createUser.LastName,
                     Role = role
                 };
             var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/custom/auth/register", user);
@@ -152,7 +152,7 @@ namespace trashtracker1.Components.HelperServices.API
         }
 
         // UPDATE-requests
-        public async Task UpdateUser(Dto.UserDto user)
+        public async Task UpdateUser(Dto.UserCreateDto user)
         {
             var response = await _httpClient.PutAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/updateuser", user);
             if (!response.IsSuccessStatusCode)
@@ -162,7 +162,7 @@ namespace trashtracker1.Components.HelperServices.API
         }
 
         // DELETE-requests
-        public async Task DeleteUserByIdentiyUserId(string identityUserId)
+        public async Task DeleteUserByIdentityUserId(string identityUserId)
         {
             var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/user/{identityUserId}");
             if (!response.IsSuccessStatusCode)

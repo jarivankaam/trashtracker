@@ -1,4 +1,10 @@
-﻿<div class="col-span-3 row-span-3 rounded-xl p-2">
+﻿@using trashtracker1.Components.HelperServices
+@using trashtracker1.Components.HelperServices.API
+@using trashtracker1.Components.HelperServices.API.Dto
+@inject PredictionsHelperService PredictionsService
+@inject ApiClient GetPredictionAsync
+
+<div class="col-span-3 row-span-3 rounded-xl p-2">
     <div id="map" class="Map h-full w-full  shadow-xl rounded-xl"></div>
 </div>
 

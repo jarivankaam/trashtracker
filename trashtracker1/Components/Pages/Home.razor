@@ -1,22 +1,36 @@
 ﻿@page "/"
 @page "/Home"
+@using trashtracker1.Components.HelperServices.API
 @rendermode InteractiveServer
 @attribute [StreamRendering]
+@inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
+@using trashtracker1.Components.HelperServices.API.Dto
+
 <PageTitle>Home</PageTitle>
+
+
+@code {
+    private List<PredictionDto> predictions = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        predictions = await ApiClient.GetPredictionAsync();
+    }
+}
 
 <div class="p-12">
 
     <div class="grid grid-cols-6 grid-rows-5 gap-x-12 gap-y-6 h-full max-w-[1920px]  mx-auto">
         @* MAP *@
-        <MapModule/>
+        <MapModule Predictions="predictionList"/>
         @* Statestieken *@
-        <StatsModule/>
+        <StatsModule  Predictions="predictionList"/>
         @* Favoriete locaties *@
-        <FavouriteLocationsModule />
+        <FavouriteLocationsModule Predictions="predictionList" />
         @*Grafiekies*@
-        <GraphModule/>
+        <GraphModule Predictions="predictionList" />
         @*Filters en feestdagen*@
-        <FiltersModule/>
+        <FiltersModule Predictions="predictionList" />
     </div>
 </div>
 

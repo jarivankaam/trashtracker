@@ -15,6 +15,8 @@ builder.Services
     .AddFontAwesomeIcons();
 builder.Services.AddScoped<trashtracker1.Components.HelperServices.LitterFilters>();
 builder.Services.AddScoped<trashtracker1.Components.HelperServices.PredictionsHelperService>();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.API.ApiClient>();
+
 
 
 var app = builder.Build();

@@ -51,7 +51,7 @@
                     </EditForm>
 
                     @*Edit User*@
-                    <EditForm Model="@edittingUser" OnValidSubmit="@EditUser" FormName="EditUserForm">
+                    <EditForm Model="@edittingUser" OnValidSubmit="@EditUserForm" FormName="EditUserForm">
                         <DataAnnotationsValidator />
                         <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
                             <h2 class="text-center font-medium mb-8">Gebruiker </h2>
@@ -149,6 +149,7 @@
     private async Task SaveUser()
     {
         await ApiClient.RegisterNewUser(creatingUser);
+        StateHasChanged();
     }
 
     private async Task EditUserForm()

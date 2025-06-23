@@ -1,25 +1,29 @@
-﻿@using trashtracker1.Components.HelperServices
-@using trashtracker1.Components.HelperServices.API
-@using trashtracker1.Components.HelperServices.API.Dto
-@inject PredictionsHelperService PredictionsService
-@inject ApiClient GetPredictionAsync
-@using trashtracker1.Components.HelperServices.API.Dto
-@inject IJSRuntime JSRuntime
+﻿    @using trashtracker1.Components.HelperServices
+    @using trashtracker1.Components.HelperServices.API
+    @using trashtracker1.Components.HelperServices.API.Dto
+    @inject PredictionsHelperService PredictionsService
+    @inject ApiClient GetPredictionAsync
+    @using trashtracker1.Components.HelperServices.API.Dto
+    @inject IJSRuntime JSRuntime
 
-<div class="col-span-3 row-span-3 rounded-xl p-2">
-    <div id="map" class="Map h-full w-full shadow-xl rounded-xl"></div>
-</div>
+    <div class="col-span-3 row-span-3 rounded-xl p-2">
+        <div id="map" class="Map h-full w-full shadow-xl rounded-xl"></div>
+    </div>
 
-@code {
-    [Parameter]
-    public List<LitterDto> Predictions { get; set; } = new();
+    @code {
+        [Parameter]
+        public List<LitterDto> Predictions { get; set; } = new();
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && Predictions?.Any() == true)
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            var jsPredictions = Predictions.Select(p => new { lat = p.LocationLatitude, lng = p.LocationLongitude });
-            await JSRuntime.InvokeVoidAsync("mapHelper.initMap", jsPredictions);
+  
+                await Task.Delay(100); // 🔧 kleine vertraging
+                if (Predictions?.Any() == true)
+                {
+                    var jsPredictions = Predictions.Select(p => new { lat = p.LocationLatitude, lng = p.LocationLongitude });
+                    await JSRuntime.InvokeVoidAsync("mapHelper.initMap", jsPredictions);
+                }
+            
         }
+
     }
-}

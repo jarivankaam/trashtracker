@@ -35,7 +35,7 @@
         }
         public async Task<List<Dto.LitterDto>> GetLitterAsync()
         {
-            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/litter");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/api/Litter/GetAllLitter");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.LitterDto>>();

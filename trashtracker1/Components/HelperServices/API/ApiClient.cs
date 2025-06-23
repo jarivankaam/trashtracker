@@ -9,7 +9,7 @@
         }
         public async Task<List<Dto.FavoriteLocationDto>> GetFavoriteLocationAsync()
         {
-            var response = await _httpClient.GetAsync("https//Holidays.com");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.FavoriteLocationDto>>();
@@ -22,7 +22,7 @@
         }
         public async Task<List<Dto.HolidaysDto>> GetHolidaysAsync()
         {
-            var response = await _httpClient.GetAsync("https//Holidays.com");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.HolidaysDto>>();
@@ -35,7 +35,7 @@
         }
         public async Task<List<Dto.LitterDto>> GetLitterAsync()
         {
-            var response = await _httpClient.GetAsync("https//Litter.com");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/litter");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.LitterDto>>();
@@ -48,7 +48,7 @@
         }
         public async Task<List<Dto.PredictionDto>> GetPredictionAsync()
         {
-            var response = await _httpClient.GetAsync("https//Litter.com");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.PredictionDto>>();
@@ -61,7 +61,7 @@
         }
         public async Task<List<Dto.UserDto>> GetUserAsync()
         {
-            var response = await _httpClient.GetAsync("https//Litter.com");
+            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
             string statusCode = Convert.ToString(response.StatusCode);
             if (response.IsSuccessStatusCode)
             {

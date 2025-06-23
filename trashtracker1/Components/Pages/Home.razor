@@ -10,11 +10,11 @@
 
 
 @code {
-    private List<PredictionDto> predictions = new();
+    private List<LitterDto> predictions = new();
 
     protected override async Task OnInitializedAsync()
     {
-        predictions = await ApiClient.GetPredictionAsync();
+        predictions = await ApiClient.GetLitterAsync();
     }
 }
 
@@ -22,15 +22,15 @@
 
     <div class="grid grid-cols-6 grid-rows-5 gap-x-12 gap-y-6 h-full max-w-[1920px]  mx-auto">
         @* MAP *@
-        <MapModule Predictions="predictionList"/>
+        <MapModule Predictions="predictions" />
         @* Statestieken *@
-        <StatsModule  Predictions="predictionList"/>
+        <StatsModule />
         @* Favoriete locaties *@
-        <FavouriteLocationsModule Predictions="predictionList" />
+        <FavouriteLocationsModule />
         @*Grafiekies*@
-        <GraphModule Predictions="predictionList" />
+        <GraphModule  />
         @*Filters en feestdagen*@
-        <FiltersModule Predictions="predictionList" />
+        <FiltersModule />
     </div>
 </div>
 

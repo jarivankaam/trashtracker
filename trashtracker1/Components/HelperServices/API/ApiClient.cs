@@ -1,4 +1,6 @@
-﻿namespace trashtracker1.Components.HelperServices.API
+﻿using trashtracker1.Components.HelperServices.API.Dto;
+
+namespace trashtracker1.Components.HelperServices.API
 {
     public class ApiClient
     {
@@ -99,8 +101,28 @@
         }
 
         // POST-requests
-        public async Task RegisterNewUser(Dto.UserDto user)
+        public async Task RegisterNewUser(UserCreateDto Createduser)
         {
+            int role;
+            if (Createduser.AdminRole == "Admin")
+            {
+                role = 0;
+            }
+            else 
+            {
+                role = 1;
+            }
+                var user = new UserDto
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    IdentityUserId = Guid.NewGuid().ToString(),
+                    Email = Createduser.Email,
+                    Password = Createduser.Password,
+                    Username = Createduser.Username,
+                    FirstName = Createduser.FirstName,
+                    LastName = Createduser.LastName,
+                    Role = role
+                };
             var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/custom/auth/register", user);
             if (!response.IsSuccessStatusCode)
             {

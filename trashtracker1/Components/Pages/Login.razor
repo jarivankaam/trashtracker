@@ -2,6 +2,12 @@
 @rendermode InteractiveServer
 @attribute [StreamRendering]
 @inject NavigationManager Navigation
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory ClientFactory
+@inject IHttpContextAccessor HttpContextAccessor
+
 
 <PageTitle>Login</PageTitle>
 
@@ -29,15 +35,37 @@
     private string password = string.Empty;
     private string httpStatusCode = "201";
     private string errorMessage = "Incorrect email or password";
-    public void HandleLogin()
+    public async Task HandleLogin()
     {
-        if (httpStatusCode == "200")
+        var client = ClientFactory.CreateClient();
+        var loginPayload = new
         {
+            Email = email,
+            Password = password
+        };
+
+        var content = new StringContent(JsonSerializer.Serialize(loginPayload), Encoding.UTF8, "application/json");
+    
+        var response = await client.PostAsync("https://avansict2231011.azurewebsites.net/auth/login", content);
+    
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("API response: " + responseContent);
+            using var jsonDoc = JsonDocument.Parse(responseContent);
+            var jwtToken = jsonDoc.RootElement.GetProperty("accessToken").GetString();
+            
+
+            // Save JWT in secure, HTTP-only cookie
+            Navigation.NavigateTo($"/auth/set-cookie?token={Uri.EscapeDataString(jwtToken)}", forceLoad: true);
+
+
             Navigation.NavigateTo("/Home");
         }
         else
         {
             verified = "False";
+            errorMessage = "Email of wachtwoord is onjuist.";
         }
     }
 }

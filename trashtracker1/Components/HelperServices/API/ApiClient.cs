@@ -1,16 +1,31 @@
-﻿using trashtracker1.Components.HelperServices.API.Dto;
+﻿using System.Net.Http.Headers;
+using trashtracker1.Components.HelperServices.API.Dto;
 
 namespace trashtracker1.Components.HelperServices.API
 {
     public class ApiClient
     {
         private readonly HttpClient _httpClient;
-        public ApiClient(HttpClient httpClient)
+        private readonly IHttpContextAccessor _contextAccessor;
+
+        public ApiClient(HttpClient httpClient, IHttpContextAccessor contextAccessor)
         {
             _httpClient = httpClient;
+            _contextAccessor = contextAccessor;
         }
+
+        private void AttachJwtHeader()
+        {
+            var token = _contextAccessor.HttpContext?.Request.Cookies["authToken"];
+            if (!string.IsNullOrEmpty(token))
+            {
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+        }
+
         public async Task<List<Dto.FavoriteLocationDto>> GetFavoriteLocationAsync()
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
             if (response.IsSuccessStatusCode)
             {
@@ -22,8 +37,10 @@ namespace trashtracker1.Components.HelperServices.API
                 return new List<Dto.FavoriteLocationDto>();
             }
         }
+
         public async Task<List<Dto.HolidaysDto>> GetHolidaysAsync()
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/api/External/holidays");
             if (response.IsSuccessStatusCode)
             {
@@ -35,8 +52,10 @@ namespace trashtracker1.Components.HelperServices.API
                 return new List<Dto.HolidaysDto>();
             }
         }
+
         public async Task<List<Dto.LitterDto>> GetLitterAsync()
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net/api/Litter/GetAllLitter");
             if (response.IsSuccessStatusCode)
             {
@@ -48,8 +67,10 @@ namespace trashtracker1.Components.HelperServices.API
                 return new List<Dto.LitterDto>();
             }
         }
+
         public async Task<List<Dto.PredictionDto>> GetPredictionAsync()
         {
+            AttachJwtHeader();
             DateTime date = DateTime.Now.AddDays(1);
             string currentdate = date.ToString("yyyy-MM-dd");
             DateTime nextMonth = DateTime.Now.AddDays(1).AddMonths(1);
@@ -72,6 +93,7 @@ namespace trashtracker1.Components.HelperServices.API
         // GET-requests
         public async Task<List<Dto.UserDto>> GetAllUsers()
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user");
             if (response.IsSuccessStatusCode)
             {
@@ -86,6 +108,7 @@ namespace trashtracker1.Components.HelperServices.API
 
         public async Task<Dto.UserDto> GetUserAsync(string identityUserId)
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/id/{identityUserId}");
             if (response.IsSuccessStatusCode)
             {
@@ -100,6 +123,7 @@ namespace trashtracker1.Components.HelperServices.API
 
         public async Task<string> GetIdenityUserIdByEmail(string email)
         {
+            AttachJwtHeader();
             var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/authentication/id/{email}");
             if (response.IsSuccessStatusCode)
             {
@@ -115,26 +139,18 @@ namespace trashtracker1.Components.HelperServices.API
         // POST-requests
         public async Task RegisterNewUser(UserCreateDto createUser)
         {
-            int role;
-            if (createUser.Role == 1)
+            AttachJwtHeader();
+            var user = new UserDto
             {
-                role = 0;
-            }
-            else 
-            {
-                role = 1;
-            }
-                var user = new UserDto
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    IdentityUserId = Guid.NewGuid().ToString(),
-                    Email = createUser.Email,
-                    Password = createUser.Password,
-                    Username = createUser.Username,
-                    FirstName = createUser.FirstName,
-                    LastName = createUser.LastName,
-                    Role = role
-                };
+                Id = Guid.NewGuid().ToString(),
+                IdentityUserId = Guid.NewGuid().ToString(),
+                Email = createUser.Email,
+                Password = createUser.Password,
+                Username = createUser.Username,
+                FirstName = createUser.FirstName,
+                LastName = createUser.LastName,
+                Role = createUser.Role
+            };
             var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/custom/auth/register", user);
             if (!response.IsSuccessStatusCode)
             {
@@ -142,8 +158,9 @@ namespace trashtracker1.Components.HelperServices.API
             }
         }
 
-        public async Task VerifyUserByPassword(Dto.UserDto user)
+        public async Task VerifyUserByPassword(UserDto user)
         {
+            AttachJwtHeader();
             var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/verifyuser", user);
             if (!response.IsSuccessStatusCode)
             {
@@ -152,8 +169,9 @@ namespace trashtracker1.Components.HelperServices.API
         }
 
         // UPDATE-requests
-        public async Task UpdateUser(Dto.UserCreateDto user)
+        public async Task UpdateUser(UserCreateDto user)
         {
+            AttachJwtHeader();
             var response = await _httpClient.PutAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/updateuser", user);
             if (!response.IsSuccessStatusCode)
             {
@@ -164,6 +182,7 @@ namespace trashtracker1.Components.HelperServices.API
         // DELETE-requests
         public async Task DeleteUserByIdentityUserId(string identityUserId)
         {
+            AttachJwtHeader();
             var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/user/{identityUserId}");
             if (!response.IsSuccessStatusCode)
             {

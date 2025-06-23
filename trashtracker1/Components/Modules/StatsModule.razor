@@ -15,7 +15,7 @@
     </div>
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Hoeveelheid afval op locatie met meeste afval:</h1>
-        <p class="text-sm">@litterFilters.LitterAmount</p>
+        <p class="text-sm">@litterFilters.litterAmount</p>
     </div>
     <div class="bg-white rounded-xl shadow-xl p-4 h-full">
         <h1 class="text-md">Hoeveelheid afval op gefilterde locatie:</h1>
@@ -33,7 +33,7 @@
     protected override void OnInitialized()
     {
         litterFilters.location = litterFilters.MostLitterLocation();
-        litterFilters.LitterAmount = litterFilters.MostLitterAmount();
+        litterFilters.litterAmount = litterFilters.MostLitterAmount();
         litterFilters.filteredLitterAmount = litterFilters.FilteredLitterAmount();
         title = PredictionsService.TitleData;
         PredictionsService.OnTitleChanged += UpdateTitle;
@@ -56,7 +56,7 @@
         {
             await Task.Delay(100);
             litterFilters.GetLitterData(7, 8, false);
-            await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle);
+            await JSRuntime.InvokeVoidAsync("renderLineChart", litterFilters.Labels, litterFilters.Values, litterFilters.ChartTitle, "");
         }
     }
     

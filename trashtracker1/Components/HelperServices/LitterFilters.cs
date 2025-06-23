@@ -16,7 +16,7 @@ namespace trashtracker1.Components.HelperServices
         private int amountOfLitter; 
         public Random rnd = new Random();
         public string location;
-        public int LitterAmount;
+        public int litterAmount;
         public int filteredLitterAmount;
         public List<int> litterData = new List<int>();
         public List<string> litterDays = new List<string>();
@@ -30,8 +30,9 @@ namespace trashtracker1.Components.HelperServices
         public int lastChosenTypeOfLitter = 8;
         public string[] Labels = [];
         public int[] Values;
-        public string ChartTitle = "Afval per dag";
-        
+        public string ChartTitle = "Alle afval van de afgelopen 7 dagen";
+        public string confidence = "";
+
         private readonly ApiClient apiClient;
 
         private readonly IJSRuntime _jsRuntime;
@@ -50,8 +51,7 @@ namespace trashtracker1.Components.HelperServices
 
         private async Task UpdateChartAsync()
         {
-            ChartTitle = "Afval per dag";
-            await _jsRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle);
+            await _jsRuntime.InvokeVoidAsync("updateLineChart", Labels, Values, ChartTitle, confidence);
         }
 
         public string MostLitterLocation()
@@ -64,9 +64,9 @@ namespace trashtracker1.Components.HelperServices
         public int MostLitterAmount()
         {
 
-            int LitterAmount = rnd.Next(0, 100);
+            int litterAmount = rnd.Next(0, 100);
 
-            return LitterAmount;
+            return litterAmount;
         }
         public int FilteredLitterAmount()
         {
@@ -78,9 +78,11 @@ namespace trashtracker1.Components.HelperServices
 
         public async void GetLitterData(int days, int typeOfLitter, bool isFutureSelected)
         {
+            float TotalConfidence = 0;
             lastChosenDays = days;
             isLastChosenFutureSelected = isFutureSelected;
             lastChosenTypeOfLitter = typeOfLitter;
+            confidence = "";
             litterData.Clear();
             litterDays.Clear();
             litterDaysLabels.Clear();
@@ -144,9 +146,47 @@ namespace trashtracker1.Components.HelperServices
                     {
                         litterDaysLabels.Add(currentDay);
                     }
+                    TotalConfidence += prediction.confidence;
                 }
+                lastChosenTypeOfLitter = 8;
+                confidence = $"Betrouwbaarheid van de voorspelling: {Math.Round((TotalConfidence / days * 100), 1).ToString("F1")}%";
             }
-                
+            
+            switch(lastChosenTypeOfLitter)
+            {
+                case 0:
+                    ChartTitle = $"Batterij afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 1:
+                    ChartTitle = $"Karton afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 2:
+                    ChartTitle = $"Glas afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 3:
+                    ChartTitle = $"Metaal afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 4:
+                    ChartTitle = $"Organisch afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 5:
+                    ChartTitle = $"Papier afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 6:
+                    ChartTitle = $"Plastic afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 7:
+                    ChartTitle = $"Tissue afval van afgelopen {lastChosenDays} dagen";
+                    break;
+                case 8 when isFutureSelected:
+                    ChartTitle = $"Al het afval van komende {lastChosenDays} dagen";
+                    break;
+                default:
+                    ChartTitle = $"Al het afval van afgelopen {lastChosenDays} dagen";
+                    break;
+            }
+            
+            
             Values = litterData.ToArray();
             Labels = litterDaysLabels.ToArray();
             

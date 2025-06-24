@@ -39,7 +39,7 @@
             @foreach (var summary in litterFilters.GetClassificationSummary())
             {
                 <p class="@((summary.IsMostCommon ? "text-danger" : ""))">
-                   @(summary.IsMostCommon ? "Meest gevonden type" : "Type")  afval: @ClassificationLabels[summary.Classification] X @summary.Count
+                   @(summary.IsMostCommon ? "Meest gevonden soort:" : "")  @ClassificationLabels[summary.Classification] X @summary.Count
                 </p>
             }
         </div>

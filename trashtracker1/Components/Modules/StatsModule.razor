@@ -14,7 +14,7 @@
     @if (litterFilters.isLastChosenFutureSelected)
     {
         <div class="bg-white rounded-xl shadow-xl p-4 h-full">
-            <h1 class="text-md">Voorspelling hoeveelheid afval (totaal):</h1>
+            <h1 class="text-md">Voorspelling hoeveelheid afval (totaal per week):</h1>
             <p class="text-sm">@litterFilters.PredictedTotal</p>
         </div>
 
@@ -33,9 +33,15 @@
             <h1 class="text-md">Hoeveelheid afval op locatie met meeste afval:</h1>
             <p class="text-sm">@litterFilters.LitterAmount</p>
         </div>
+       
         <div class="bg-white rounded-xl shadow-xl p-4 h-full">
             <h1 class="text-md">Hoeveelheid afval op gefilterde locatie:</h1>
-            <p class="text-sm">@litterFilters.filteredLitterAmount</p>
+            @foreach (var summary in litterFilters.GetClassificationSummary())
+            {
+                <p class="@((summary.IsMostCommon ? "text-danger" : ""))">
+                   @(summary.IsMostCommon ? "Meest gevonden type" : "Type")  afval: @ClassificationLabels[summary.Classification] X @summary.Count
+                </p>
+            }
         </div>
     }
 </div>
@@ -46,6 +52,17 @@
     [Inject] LitterFilters litterFilters { get; set; }
     private string title;
     
+    private readonly Dictionary<int, string> ClassificationLabels = new()
+    {
+        { 0, "Batterij" },
+        { 1, "Karton" },
+        { 2, "glas" },
+        { 3, "metaal" },
+        { 4, "organishe" },
+        { 5, "papier" },
+        { 6, "plastic" },
+        { 7, "tissue" }
+    };
 
     protected override async Task OnInitializedAsync()
     {
@@ -64,9 +81,13 @@
 
         if (!isFuture)
         {
-            litterFilters.location = litterFilters.MostLitterLocation();
+            var coords = litterFilters.MostLitterLocation();
+            Console.WriteLine(coords);
+            var address = await ApiClient.GetAddressFromCoordinatesAsync(coords);
+            litterFilters.location = address;
             litterFilters.LitterAmount = litterFilters.MostLitterAmount();
         }
+
         else
         {
             litterFilters.location = "Geen gegevens voor toekomst";
@@ -103,4 +124,5 @@
     {
         PredictionsService.OnTitleChanged -= UpdateTitle;
     }
+    
 }

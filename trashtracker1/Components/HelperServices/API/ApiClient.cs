@@ -13,6 +13,31 @@ namespace trashtracker1.Components.HelperServices.API
             _httpClient = httpClient;
             _contextAccessor = contextAccessor;
         }
+        
+        public async Task<string> GetAddressFromCoordinatesAsync(string coordinates)
+        {
+            var rawParts = coordinates.Trim().Split(',');
+
+            if (rawParts.Length != 4)
+                return "Ongeldige coördinaten"; // Verwacht exact: [51, 589, 4, 781]
+
+            // Stap 2: combineer losse getallen tot geldige decimale strings
+            var lat = $"{rawParts[0].Trim()}.{rawParts[1].Trim()}"; // "51.589"
+            var lon = $"{rawParts[2].Trim()}.{rawParts[3].Trim()}"; // "4.781"
+
+            var url = $"https://maps.googleapis.com/maps/api/geocode/json?latlng={lat},{lon}&key=AIzaSyCusLDewLcpJqvFB1PcR47aspiwA8w-kDk";
+
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Google Maps API error: " + response.StatusCode);
+                return "Adres niet beschikbaar";
+            }
+
+            var data = await response.Content.ReadFromJsonAsync<Dto.GoogleGeocodingDto>();
+            return data?.results?.FirstOrDefault()?.formatted_address ?? "Adres niet gevonden";
+        }
+
 
         private void AttachJwtHeader()
         {
@@ -189,5 +214,6 @@ namespace trashtracker1.Components.HelperServices.API
                 Console.WriteLine("Error: " + response.StatusCode);
             }
         }
+        
     }
 }

@@ -287,5 +287,57 @@ public int MostLitterAmount()
                 }
             }
         }
+        public List<LitterClassificationSummary> GetClassificationSummary()
+        {
+            if (litterDto == null || !litterDto.Any())
+                return new List<LitterClassificationSummary>();
+
+            List<LitterDto> filteredLitter = new();
+
+            if (lastChosenDays == 1 && !isLastChosenFutureSelected)
+            {
+                var now = DateTime.Now;
+                DateTime beginDay = new DateTime(now.Year, now.Month, now.Day);
+
+                filteredLitter = litterDto
+                    .Where(l => l.DetectionTime.Date == beginDay.Date &&
+                                (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter))
+                    .ToList();
+            }
+            else if (!isLastChosenFutureSelected)
+            {
+                for (int i = (lastChosenDays - 1); i >= 0; i--)
+                {
+                    string currentDay = DateTime.Now.AddDays(-i).ToString("dd-MM");
+
+                    filteredLitter.AddRange(litterDto.Where(l =>
+                        l.DetectionTime.ToString("dd-MM").Contains(currentDay) &&
+                        (lastChosenTypeOfLitter == 8 || l.Classification == lastChosenTypeOfLitter)));
+                }
+            }
+            else // Future
+            {
+                return new List<LitterClassificationSummary>();
+            }
+
+            var grouped = filteredLitter
+                .GroupBy(l => l.Classification)
+                .Select(g => new LitterClassificationSummary
+                {
+                    Classification = g.Key,
+                    Count = g.Count(),
+                    IsMostCommon = false // tijdelijk
+                })
+                .ToList();
+
+            var maxCount = grouped.MaxBy(g => g.Count);
+            if (maxCount != null)
+            {
+                grouped.First(g => g.Classification == maxCount.Classification).IsMostCommon = true;
+            }
+
+            return grouped.OrderByDescending(g => g.Count).ToList();
+        }
+
     }
 }

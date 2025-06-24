@@ -1,10 +1,10 @@
-﻿@page "/Adminpanel"
+﻿@page "/admin"
 @using trashtracker1.Components.HelperServices.API
 @using trashtracker1.Components.HelperServices.API.Dto
 @using Microsoft.AspNetCore.Components.Forms
 @inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
 @rendermode InteractiveServer
-<div class="h-[78vh]">
+<div class="h-full  max-w-[1920px]">
     <div class="bg-white flex text-sm h-full">
         @*Sidebar*@
         <div class="w-50 bg-white flex flex-col justify-between py-3 pt-8 px-1 space-y-2 h-full shadow-[8px_0px_20px_-5px_rgba(0,0,0,0.08)]">
@@ -18,7 +18,7 @@
         </div>
 
         @*Main content*@
-        <div class="flex-1 p-8 h-full">
+        <div class="flex-1 p-8 h-full  max-w-[1035px]">
             <div class="bg-gray-100 w-full rounded-xl p-10 h-full flex flex-col space-y-4">
                 @*Forms row*@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">

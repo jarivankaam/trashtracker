@@ -35,7 +35,7 @@
         </div>
        
         <div class="bg-white rounded-xl shadow-xl p-4 h-full">
-            <h1 class="text-md">Hoeveelheid afval op gefilterde locatie:</h1>
+            <h1 class="text-md">Hoeveelheid afval soorten gevonden:</h1>
             @foreach (var summary in litterFilters.GetClassificationSummary())
             {
                 <p class="@((summary.IsMostCommon ? "text-danger" : ""))">

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
+using trashtracker1.Components.HelperServices.API.Dto;
 
 namespace trashtracker1.Components.HelperServices.API
 {
@@ -88,11 +88,13 @@ namespace trashtracker1.Components.HelperServices.API
             }
         }
 
-        public async Task<List<Dto.UserDto>> GetUserAsync()
+        // USER MANAGEMENT
+
+        // GET-requests
+        public async Task<List<Dto.UserDto>> GetAllUsers()
         {
             AttachJwtHeader();
-            var response = await _httpClient.GetAsync("https://avansict2231011.azurewebsites.net");
-            string statusCode = Convert.ToString(response.StatusCode);
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user");
             if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadFromJsonAsync<List<Dto.UserDto>>();
@@ -101,6 +103,90 @@ namespace trashtracker1.Components.HelperServices.API
             {
                 Console.WriteLine("Error: " + response.StatusCode);
                 return new List<Dto.UserDto>();
+            }
+        }
+
+        public async Task<Dto.UserDto> GetUserAsync(string identityUserId)
+        {
+            AttachJwtHeader();
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/id/{identityUserId}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Dto.UserDto>();
+            }
+            else
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+                return new Dto.UserDto();
+            }
+        }
+
+        public async Task<string> GetIdenityUserIdByEmail(string email)
+        {
+            AttachJwtHeader();
+            var response = await _httpClient.GetAsync($"https://avansict2231011.azurewebsites.net/api/user/authentication/id/{email}");
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+                return string.Empty;
+            }
+        }
+
+        // POST-requests
+        public async Task RegisterNewUser(UserCreateDto createUser)
+        {
+            AttachJwtHeader();
+            var user = new UserDto
+            {
+                Id = Guid.NewGuid().ToString(),
+                IdentityUserId = Guid.NewGuid().ToString(),
+                Email = createUser.Email,
+                Password = createUser.Password,
+                Username = createUser.Username,
+                FirstName = createUser.FirstName,
+                LastName = createUser.LastName,
+                Role = createUser.Role
+            };
+            var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/custom/auth/register", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        public async Task VerifyUserByPassword(UserDto user)
+        {
+            AttachJwtHeader();
+            var response = await _httpClient.PostAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/verifyuser", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        // UPDATE-requests
+        public async Task UpdateUser(UserCreateDto user)
+        {
+            AttachJwtHeader();
+            var response = await _httpClient.PutAsJsonAsync("https://avansict2231011.azurewebsites.net/api/user/updateuser", user);
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
+            }
+        }
+
+        // DELETE-requests
+        public async Task DeleteUserByIdentityUserId(string identityUserId)
+        {
+            AttachJwtHeader();
+            var response = await _httpClient.DeleteAsync($"https://avansict2231011.azurewebsites.net/api/user/{identityUserId}");
+            if (!response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Error: " + response.StatusCode);
             }
         }
     }

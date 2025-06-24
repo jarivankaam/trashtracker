@@ -13,9 +13,18 @@ builder.Services
     .AddBlazorise()
     .AddTailwindProviders()
     .AddFontAwesomeIcons();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.LitterFilters>();
+builder.Services.AddScoped<trashtracker1.Components.HelperServices.PredictionsHelperService>();
+builder.Services.AddHttpClient<trashtracker1.Components.HelperServices.API.ApiClient>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllers(); // Add this
+
+
+
 
 
 var app = builder.Build();
+app.MapControllers(); // Add this
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

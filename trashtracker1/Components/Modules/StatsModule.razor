@@ -1,0 +1,128 @@
+﻿@using trashtracker1.Components.HelperServices
+@inject PredictionsHelperService PredictionsService
+@inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
+
+<div class="col-span-2 row-span-3 flex flex-col gap-5">
+    
+    <div class="text-md flex flex-row gap-5 w-full align-items-center">
+        <h2>Je bekijkt nu: @title</h2>
+        <select @onchange="PredictionsService.OnSelectChange" class="p-3 w-full rounded-xl">
+            <option value="History">Historie</option>
+            <option value="Future">Toekomst</option>
+        </select>
+    </div>
+    @if (litterFilters.isLastChosenFutureSelected)
+    {
+        <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+            <h1 class="text-md">Voorspelling hoeveelheid afval (totaal per week):</h1>
+            <p class="text-sm">@litterFilters.PredictedTotal</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+            <h1 class="text-md">Vertrouwen in voorspelling (%):</h1>
+            <p class="text-sm">@litterFilters.PredictionConfidence</p>
+        </div>
+    }
+    @if (!litterFilters.isLastChosenFutureSelected)
+    {
+        <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+            <h1 class="text-md">Locatie met meeste afval:</h1>
+            <p class="text-sm">@litterFilters.location</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+            <h1 class="text-md">Hoeveelheid afval op locatie met meeste afval:</h1>
+            <p class="text-sm">@litterFilters.LitterAmount</p>
+        </div>
+       
+        <div class="bg-white rounded-xl shadow-xl p-4 h-full">
+            <h1 class="text-md">Hoeveelheid afval soorten gevonden:</h1>
+            @foreach (var summary in litterFilters.GetClassificationSummary())
+            {
+                <p class="@((summary.IsMostCommon ? "text-danger" : ""))">
+                   @(summary.IsMostCommon ? "Meest gevonden soort:" : "")  @ClassificationLabels[summary.Classification] X @summary.Count
+                </p>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    [Inject] IJSRuntime JSRuntime { get; set; }
+    [Inject] LitterFilters litterFilters { get; set; }
+    private string title;
+    
+    private readonly Dictionary<int, string> ClassificationLabels = new()
+    {
+        { 0, "Batterij" },
+        { 1, "Karton" },
+        { 2, "glas" },
+        { 3, "metaal" },
+        { 4, "organishe" },
+        { 5, "papier" },
+        { 6, "plastic" },
+        { 7, "tissue" }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await litterFilters.MakeApiCall();
+        await UpdateLitterDisplay(PredictionsService.IsFutureSelected);
+
+        title = PredictionsService.TitleData;
+        PredictionsService.OnTitleChanged += UpdateTitle;
+    }
+
+    private async Task UpdateLitterDisplay(bool isFuture)
+    {
+        await litterFilters.GetLitterData(7, 8, isFuture);
+        _shouldRenderChart = true;
+        StateHasChanged();
+
+        if (!isFuture)
+        {
+            var coords = litterFilters.MostLitterLocation();
+            Console.WriteLine(coords);
+            var address = await ApiClient.GetAddressFromCoordinatesAsync(coords);
+            litterFilters.location = address;
+            litterFilters.LitterAmount = litterFilters.MostLitterAmount();
+        }
+
+        else
+        {
+            litterFilters.location = "Geen gegevens voor toekomst";
+            litterFilters.LitterAmount = 0;
+        }
+
+        litterFilters.filteredLitterAmount = litterFilters.FilteredLitterAmount();
+
+        _shouldRenderChart = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async void UpdateTitle()
+    {
+        title = PredictionsService.TitleData;
+        await UpdateLitterDisplay(PredictionsService.IsFutureSelected);
+    }
+
+    private bool _shouldRenderChart = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender || _shouldRenderChart)
+        {
+            _shouldRenderChart = false;
+            await litterFilters.UpdateChartAsync(isInitialRender: firstRender);
+            await litterFilters.UpdateChartAsync(isInitialRender: true);
+        }
+    }
+
+
+
+    public void Dispose()
+    {
+        PredictionsService.OnTitleChanged -= UpdateTitle;
+    }
+    
+}

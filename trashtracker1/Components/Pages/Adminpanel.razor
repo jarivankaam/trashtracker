@@ -1,0 +1,202 @@
+﻿@page "/admin"
+@using trashtracker1.Components.HelperServices.API
+@using trashtracker1.Components.HelperServices.API.Dto
+@using Microsoft.AspNetCore.Components.Forms
+@inject trashtracker1.Components.HelperServices.API.ApiClient ApiClient
+@rendermode InteractiveServer
+<div class="h-full  max-w-[1920px]">
+    <div class="bg-white flex text-sm h-full">
+        @*Sidebar*@
+        <div class="w-50 bg-white flex flex-col justify-between py-3 pt-8 px-1 space-y-2 h-full shadow-[8px_0px_20px_-5px_rgba(0,0,0,0.08)]">
+            <div class="space-y-2">
+                <button class="w-full bg-gray-200 rounded px-2 py-1 hover:bg-gray-300">Gebruikers</button>
+                <button class="w-full bg-gray-200 rounded px-2 py-1 hover:bg-gray-300">Handleiding</button>
+            </div>
+            <div class="mt-auto">
+                <button class="w-full bg-gray-200 rounded px-2 py-1 hover:bg-gray-300">Uitloggen</button>
+            </div>
+        </div>
+
+        @*Main content*@
+        <div class="flex-1 p-8 h-full  max-w-[1035px]">
+            <div class="bg-gray-100 w-full rounded-xl p-10 h-full flex flex-col space-y-4">
+                @*Forms row*@
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    @*Add User*@
+                    <EditForm Model="@createUser" OnValidSubmit="@CreateUser">
+                        <DataAnnotationsValidator />
+                        <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
+                            <h2 class="text-center font-medium mb-8">Gebruiker toevoegen</h2>
+
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="createUser.FirstName" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="createUser.LastName" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="createUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <InputText @bind-Value="createUser.Username" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-4">
+                                <InputText @bind-Value="createUser.Password" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                <select @bind="createUser.Role"
+                                class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400">
+                                    <option value="0">Toezichthouder</option>
+                                    <option value="1">College van Burgemeester en Wethouders (B&W)</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4 mb-1">
+                                <div></div>
+                                <button type="submit" class="w-full bg-gray-100 border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">
+                                    opslaan
+                                </button>
+                            </div>
+                        </div>
+                    </EditForm>
+
+                    @*Edit User*@
+                    @if (string.IsNullOrWhiteSpace(editUser?.IdentityUserId))
+                    {
+                        <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full justify-center items-center text-gray-500 italic text-sm">
+                            Geen gebruiker geselecteerd
+                        </div>
+                    }
+                    else
+                    {
+                        <EditForm Model="@editUser" OnValidSubmit="@UpdateUser">
+                            <DataAnnotationsValidator />
+                            <div class="bg-white p-3 rounded-lg shadow-xl flex flex-col h-full">
+                                <h2 class="text-center font-medium mb-8">Gebruiker bewerken</h2>
+
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <InputText @bind-Value="editUser.FirstName" placeholder="Voornaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                    <InputText @bind-Value="editUser.LastName" placeholder="Achternaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <InputText @bind-Value="editUser.Email" placeholder="Email" type="email" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                    <InputText @bind-Value="editUser.Username" placeholder="Gebruikersnaam" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <InputText @bind-Value="editUser.Password" placeholder="Wachtwoord" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400" />
+                                    <select @bind="editUser.Role"
+                                            class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 text-xs text-gray-700 text-center focus:outline-none focus:ring-1 focus:ring-red-400">
+                                        <option value="0">Toezichthouder</option>
+                                        <option value="1">College van Burgemeester en Wethouders (B&W)</option>
+                                    </select>
+                                </div>
+                                <div class="grid grid-cols-2 gap-4 mb-1">
+                                    <div></div>
+                                    <button type="submit" class="w-full bg-gray-100 border border-gray-300 rounded px-2 py-1 hover:bg-gray-300">
+                                        opslaan
+                                    </button>
+                                </div>
+                            </div>
+                        </EditForm>
+                    }
+                </div>
+                @*User List*@
+                <h2 class="mb-4 font-medium text-xs text-left">Gebruikers</h2>
+                <div class="w-full overflow-auto rounded-lg shadow-xl bg-white p-4">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Voornaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Achternaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Gebruikersnaam</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">E-mailadres</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rol</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Is administrator</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Acties</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @if (Users == null)
+                            {
+                                <p>Loading...</p>
+                            }
+                            else if (!Users.Any())
+                            {
+                                <tr>
+                                    <td colspan="6" class="px-6 py-4 text-gray-500 italic text-center">Geen gebruikers gevonden...</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                @foreach (var User in Users)
+                                {
+                                    <tr class="odd:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.FirstName</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.LastName</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.Username</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@User.Email</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">@(User.Role == 1 ? "College van Burgemeester en Wethouders (B&W)" : "Toezichthouder")</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @(User.Role == 1 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")">
+                                                @(User.Role == 1 ? "Ja" : "Nee")
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <button class="px-4 py-2 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-500 transition" @onclick="async () => await EditUser(User.IdentityUserId)">Bewerk</button>
+                                            <button class="ml-4 px-4 py-2 font-medium text-white bg-red-600 rounded-md hover:bg-red-500 transition" @onclick="async () => await DeleteUser(User.IdentityUserId)">Verwijder</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    private List<UserDto> Users;
+    private UserCreateDto createUser = new UserCreateDto();
+    private UserCreateDto editUser = new UserCreateDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        Users = await ApiClient.GetAllUsers(); 
+    }
+
+    private async Task CreateUser()
+    {
+        await ApiClient.RegisterNewUser(createUser);
+        await LoadUsers();
+        StateHasChanged();
+		createUser = new UserCreateDto(); // Reset
+    }
+
+    private async Task UpdateUser()
+    {
+        await ApiClient.UpdateUser(editUser);
+        await LoadUsers();
+    }
+
+    private async Task EditUser(string identityUserId)
+    {
+		UserDto user = await ApiClient.GetUserAsync(identityUserId);
+		editUser = new UserCreateDto
+			{
+				Id = user.Id,
+				IdentityUserId = user.IdentityUserId,
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				Email = user.Email,
+				Username = user.Username,
+				Role = user.Role
+			};
+        StateHasChanged();
+    }
+
+    private async Task DeleteUser(string identityUserId)
+    {
+        await ApiClient.DeleteUserByIdentityUserId(identityUserId);
+        await LoadUsers();
+        StateHasChanged();
+    }
+}

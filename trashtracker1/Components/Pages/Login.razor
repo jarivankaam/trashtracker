@@ -1,0 +1,71 @@
+﻿@page "/Login"
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject NavigationManager Navigation
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using System.Text
+@inject IHttpClientFactory ClientFactory
+@inject IHttpContextAccessor HttpContextAccessor
+
+
+<PageTitle>Login</PageTitle>
+
+<div class="flex items-center justify-center">
+    <div class="w-[65%] h-[74vh] my-5 p-6 bg-gray-100 rounded-xl flex items-center justify-center">
+        <div class="w-[35%] h-[55%] p-6 bg-white shadow-xl rounded-xl flex flex-col">
+            <p class="font-medium text-md text-center mb-4">Inloggen</p>
+            <input type="email" placeholder="Email" @bind="email" class="px-2 mb-4 py-1 rounded-xl bg-gray-100 border-gray-400 w-full flex items-center" />
+            <input type="password" placeholder="Wachtwoord" @bind="password" class="px-2 mb-4 py-1 rounded-xl bg-gray-100 border-gray-400 w-full flex items-center" />
+            @if (verified == "False")
+            {
+                <p class="text-red-500 text-sm mt-2">@errorMessage</p>
+            }
+            <div class="flex-grow"></div>
+            <div class="flex justify-end">
+                <button @onclick="HandleLogin" class=" px-4 py-1 w-1/2 rounded-xl bg-gray-100 border border-gray-400 text-md">Login</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code{
+    private string verified = "";
+    private string email = string.Empty;
+    private string password = string.Empty;
+    private string httpStatusCode = "201";
+    private string errorMessage = "Incorrect email or password";
+    public async Task HandleLogin()
+    {
+        var client = ClientFactory.CreateClient();
+        var loginPayload = new
+        {
+            Email = email,
+            Password = password
+        };
+
+        var content = new StringContent(JsonSerializer.Serialize(loginPayload), Encoding.UTF8, "application/json");
+    
+        var response = await client.PostAsync("https://avansict2231011.azurewebsites.net/auth/login", content);
+    
+        if (response.IsSuccessStatusCode)
+        {
+            var responseContent = await response.Content.ReadAsStringAsync();
+            Console.WriteLine("API response: " + responseContent);
+            using var jsonDoc = JsonDocument.Parse(responseContent);
+            var jwtToken = jsonDoc.RootElement.GetProperty("accessToken").GetString();
+            
+
+            // Save JWT in secure, HTTP-only cookie
+            Navigation.NavigateTo($"/auth/set-cookie?token={Uri.EscapeDataString(jwtToken)}", forceLoad: true);
+
+
+            Navigation.NavigateTo("/Home");
+        }
+        else
+        {
+            verified = "False";
+            errorMessage = "Email of wachtwoord is onjuist.";
+        }
+    }
+}

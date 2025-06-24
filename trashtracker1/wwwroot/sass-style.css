@@ -1,0 +1,28 @@
+/*!******************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./assets/scss/custom.scss ***!
+  \******************************************************************************************************************/
+* {
+  font-family: "Fredoka", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #597753 !important;
+}
+
+body {
+  padding-top: 0px;
+}
+
+.header {
+  background: #FFFFFF;
+  box-shadow: 0 4px 20px 5px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  margin-bottom: 0px;
+  position: relative;
+  width: 100%;
+  z-index: 99999;
+  top: 0;
+}
+.header h1 {
+  font-weight: normal;
+}

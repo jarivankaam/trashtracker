@@ -1,0 +1,29 @@
+﻿    @using trashtracker1.Components.HelperServices
+    @using trashtracker1.Components.HelperServices.API
+    @using trashtracker1.Components.HelperServices.API.Dto
+    @inject PredictionsHelperService PredictionsService
+    @inject ApiClient GetPredictionAsync
+    @using trashtracker1.Components.HelperServices.API.Dto
+    @inject IJSRuntime JSRuntime
+
+    <div class="col-span-3 row-span-3 rounded-xl p-2">
+        <div id="map" class="Map sm:h-full w-full shadow-xl rounded-xl h-[400px]"></div>
+    </div>
+
+    @code {
+        [Parameter]
+        public List<LitterDto> Predictions { get; set; } = new();
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+  
+                await Task.Delay(100); // 🔧 kleine vertraging
+                if (Predictions?.Any() == true)
+                {
+                    var jsPredictions = Predictions.Select(p => new { lat = p.LocationLatitude, lng = p.LocationLongitude });
+                    await JSRuntime.InvokeVoidAsync("mapHelper.initMap", jsPredictions);
+                }
+            
+        }
+
+    }

@@ -7,7 +7,11 @@
     <base href="/"/>
     <link rel="stylesheet" href="@Assets["app.css"]"/>
     <link rel="stylesheet" href="@Assets["trashtracker1.styles.css"]"/>
+    <link rel="stylesheet" href="sass-style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/flowbite@1.5.4/dist/flowbite.min.css" />
     <link href="_content/Blazorise.Icons.FontAwesome/v6/css/all.min.css" rel="stylesheet">
 
@@ -24,7 +28,15 @@
 <body>
 <Routes/>
 <script src="_framework/blazor.web.js"></script>
-    <script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
+<script src="https://unpkg.com/flowbite@1.5.4/dist/flowbite.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/mapInterop.js"></script>
+<script src="js/Graph.js"></script>
+<script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCusLDewLcpJqvFB1PcR47aspiwA8w-kDk&loading=async&libraries=visualization">
+</script>
+
+
 </body>
 
 </html>
